@@ -164,9 +164,26 @@ export default function MilkCarton3D() {
       ctx.arc(512, 700, 100, 0, Math.PI * 2);
       ctx.fill();
 
+      // Crisp vector bottle silhouette (zero emoji reliance)
+      ctx.save();
+      ctx.translate(512, 695);
       ctx.fillStyle = variant.headerColor;
-      ctx.font = "80px sans-serif";
-      ctx.fillText("🥛", 512, 725);
+      ctx.beginPath();
+      ctx.roundRect(-24, -48, 48, 18, [4, 4, 0, 0]);
+      ctx.fill();
+      ctx.beginPath();
+      ctx.roundRect(-38, -26, 76, 80, [14, 14, 10, 10]);
+      ctx.fill();
+      // Inner fresh milk badge
+      ctx.fillStyle = "#ffffff";
+      ctx.beginPath();
+      ctx.arc(0, 14, 16, 0, Math.PI * 2);
+      ctx.fill();
+      ctx.fillStyle = variant.accentColor;
+      ctx.beginPath();
+      ctx.arc(0, 14, 8, 0, Math.PI * 2);
+      ctx.fill();
+      ctx.restore();
 
       // Quality stamps & Volume
       ctx.fillStyle = "#0c2340";

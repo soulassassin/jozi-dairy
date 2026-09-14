@@ -23,14 +23,17 @@ export const COMPANY_INFO = {
   hours: "Mon - Fri: 8:00 - 17:00",
   phones: {
     office: "011 805 1355",
-    officeTelLink: "tel:+27118051355",
+    officeTelLink: "tel:0118051355",
     whatsapp: "065 234 2460",
-    whatsappLink: "https://wa.me/27652342460",
+    whatsappLink: "https://wa.me/27652342460?text=Hello%20Jozi%20Dairy%2C%20I%20would%20like%20to%20inquire%20about%20your%20products.",
   },
   emails: {
     operations: "operations@jozidairy.co.za",
+    operationsLink: "mailto:operations@jozidairy.co.za?subject=Order%20Inquiry",
     accounts: "accounts@jozidairy.co.za",
+    accountsLink: "mailto:accounts@jozidairy.co.za?subject=Accounts%20Query",
     sales: "ashley@jozidairy.co.za",
+    salesLink: "mailto:ashley@jozidairy.co.za?subject=Wholesale%20Quote%20Request",
   },
   social: {
     facebook: "https://fb.me/jozidairy",
@@ -49,12 +52,12 @@ export const COMPANY_INFO = {
 };
 
 export const SERVICE_BADGES = [
-  { id: "milk", label: "We do Fresh Milk", icon: "🥛", count: "4 Options" },
-  { id: "yoghurt", label: "We do Yogurt", icon: "🥣", count: "10+ Flavours" },
-  { id: "cream", label: "We do Fresh Cream", icon: "🍶", count: "1 Litre Pure" },
-  { id: "amasi", label: "We do Amasi", icon: "🥛", count: "Traditional Thick" },
-  { id: "juice", label: "We do Fruit Juice", icon: "🍊", count: "100% Blend" },
-  { id: "blend", label: "We do Dairy Blend", icon: "🧃", count: "Bulk Value" },
+  { id: "milk", label: "We do Fresh Milk", iconKey: "milk", count: "4 Options" },
+  { id: "yoghurt", label: "We do Yogurt", iconKey: "yoghurt", count: "10+ Flavours" },
+  { id: "cream", label: "We do Fresh Cream", iconKey: "cream", count: "1 Litre Pure" },
+  { id: "amasi", label: "We do Amasi", iconKey: "amasi", count: "Traditional Thick" },
+  { id: "juice", label: "We do Fruit Juice", iconKey: "juice", count: "100% Blend" },
+  { id: "blend", label: "We do Dairy Blend", iconKey: "blend", count: "Bulk Value" },
 ];
 
 export const PRODUCTS: ProductItem[] = [

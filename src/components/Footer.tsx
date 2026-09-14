@@ -38,7 +38,7 @@ export default function Footer() {
               </div>
             </Link>
 
-            <p className="text-slate-300 text-sm leading-relaxed mb-6">
+            <p className="text-slate-300 text-sm leading-relaxed mb-6 text-pretty">
               For all your Dairy needs. At Jozi Dairy we are committed to distribute the best quality dairy products to our consumers. We are not only distributing the best quality dairy products, we also pride ourselves in ensuring the best customer experience.
             </p>
 
@@ -47,7 +47,7 @@ export default function Footer() {
                 href={COMPANY_INFO.social.facebook}
                 target="_blank"
                 rel="noopener noreferrer"
-                className="w-9 h-9 rounded-full bg-white/10 hover:bg-jozi-cyan text-white flex items-center justify-center text-xs font-bold transition-colors"
+                className="w-11 h-11 rounded-full bg-white/10 hover:bg-jozi-cyan text-white flex items-center justify-center text-xs font-bold transition-colors min-h-[44px] min-w-[44px]"
                 aria-label="Facebook"
               >
                 FB
@@ -56,7 +56,7 @@ export default function Footer() {
                 href={COMPANY_INFO.social.instagram}
                 target="_blank"
                 rel="noopener noreferrer"
-                className="w-9 h-9 rounded-full bg-white/10 hover:bg-jozi-cyan text-white flex items-center justify-center text-xs font-bold transition-colors"
+                className="w-11 h-11 rounded-full bg-white/10 hover:bg-jozi-cyan text-white flex items-center justify-center text-xs font-bold transition-colors min-h-[44px] min-w-[44px]"
                 aria-label="Instagram"
               >
                 IG
@@ -65,7 +65,7 @@ export default function Footer() {
                 href={COMPANY_INFO.social.whatsapp}
                 target="_blank"
                 rel="noopener noreferrer"
-                className="w-9 h-9 rounded-full bg-green-500/20 hover:bg-green-500 text-green-400 hover:text-white flex items-center justify-center text-xs font-bold transition-colors"
+                className="w-11 h-11 rounded-full bg-green-500/20 hover:bg-green-500 text-green-400 hover:text-white flex items-center justify-center text-xs font-bold transition-colors min-h-[44px] min-w-[44px]"
                 aria-label="WhatsApp"
               >
                 WA
@@ -75,37 +75,37 @@ export default function Footer() {
 
           {/* Column 2: Quick Navigation (Col span 2) */}
           <div className="lg:col-span-2">
-            <h4 className="text-sm font-bold uppercase tracking-wider text-jozi-cyan mb-5">
+            <h4 className="text-xs font-bold uppercase tracking-wider text-jozi-cyan mb-5">
               Quick Links
             </h4>
             <ul className="space-y-3 text-sm text-slate-300">
               <li>
-                <a href="#home" className="hover:text-jozi-cyan transition-colors flex items-center gap-1.5">
-                  <ChevronRight className="w-3.5 h-3.5 text-slate-500" />
+                <a href="#home" className="hover:text-jozi-cyan transition-colors flex items-center gap-1.5 py-1">
+                  <ChevronRight className="w-3.5 h-3.5 text-slate-500 shrink-0" />
                   <span>Home</span>
                 </a>
               </li>
               <li>
-                <a href="#about" className="hover:text-jozi-cyan transition-colors flex items-center gap-1.5">
-                  <ChevronRight className="w-3.5 h-3.5 text-slate-500" />
+                <a href="#about" className="hover:text-jozi-cyan transition-colors flex items-center gap-1.5 py-1">
+                  <ChevronRight className="w-3.5 h-3.5 text-slate-500 shrink-0" />
                   <span>About Us</span>
                 </a>
               </li>
               <li>
-                <a href="#products" className="hover:text-jozi-cyan transition-colors flex items-center gap-1.5">
-                  <ChevronRight className="w-3.5 h-3.5 text-slate-500" />
+                <a href="#products" className="hover:text-jozi-cyan transition-colors flex items-center gap-1.5 py-1">
+                  <ChevronRight className="w-3.5 h-3.5 text-slate-500 shrink-0" />
                   <span>Services & Products</span>
                 </a>
               </li>
               <li>
-                <a href="#provenance" className="hover:text-jozi-cyan transition-colors flex items-center gap-1.5">
-                  <ChevronRight className="w-3.5 h-3.5 text-slate-500" />
+                <a href="#provenance" className="hover:text-jozi-cyan transition-colors flex items-center gap-1.5 py-1">
+                  <ChevronRight className="w-3.5 h-3.5 text-slate-500 shrink-0" />
                   <span>Mooi River Supply</span>
                 </a>
               </li>
               <li>
-                <a href="#contact" className="hover:text-jozi-cyan transition-colors flex items-center gap-1.5">
-                  <ChevronRight className="w-3.5 h-3.5 text-slate-500" />
+                <a href="#contact" className="hover:text-jozi-cyan transition-colors flex items-center gap-1.5 py-1">
+                  <ChevronRight className="w-3.5 h-3.5 text-slate-500 shrink-0" />
                   <span>Contact Us</span>
                 </a>
               </li>
@@ -114,7 +114,7 @@ export default function Footer() {
 
           {/* Column 3: Department Inquiries (Col span 3) */}
           <div className="lg:col-span-3">
-            <h4 className="text-sm font-bold uppercase tracking-wider text-jozi-cyan mb-5">
+            <h4 className="text-xs font-bold uppercase tracking-wider text-jozi-cyan mb-5">
               Department Queries
             </h4>
             <ul className="space-y-3.5 text-xs text-slate-300">
@@ -124,17 +124,17 @@ export default function Footer() {
                   href={COMPANY_INFO.phones.whatsappLink}
                   target="_blank"
                   rel="noopener noreferrer"
-                  className="font-bold text-green-400 hover:text-green-300 flex items-center gap-1.5"
+                  className="font-bold text-green-400 hover:text-green-300 flex items-center gap-1.5 py-0.5"
                 >
-                  <MessageCircle className="w-3.5 h-3.5 fill-current" />
+                  <MessageCircle className="w-3.5 h-3.5 fill-current shrink-0" />
                   <span>065 234 2460</span>
                 </a>
               </li>
               <li>
                 <span className="text-slate-400 block mb-0.5">Operations / Orders:</span>
                 <a
-                  href={`mailto:${COMPANY_INFO.emails.operations}`}
-                  className="font-semibold text-white hover:text-jozi-cyan transition-colors"
+                  href={COMPANY_INFO.emails.operationsLink}
+                  className="font-semibold text-white hover:text-jozi-cyan transition-colors py-0.5 inline-block"
                 >
                   {COMPANY_INFO.emails.operations}
                 </a>
@@ -142,8 +142,8 @@ export default function Footer() {
               <li>
                 <span className="text-slate-400 block mb-0.5">Sales & Commercial:</span>
                 <a
-                  href={`mailto:${COMPANY_INFO.emails.sales}`}
-                  className="font-semibold text-white hover:text-jozi-cyan transition-colors"
+                  href={COMPANY_INFO.emails.salesLink}
+                  className="font-semibold text-white hover:text-jozi-cyan transition-colors py-0.5 inline-block"
                 >
                   {COMPANY_INFO.emails.sales}
                 </a>
@@ -151,8 +151,8 @@ export default function Footer() {
               <li>
                 <span className="text-slate-400 block mb-0.5">Accounts Queries:</span>
                 <a
-                  href={`mailto:${COMPANY_INFO.emails.accounts}`}
-                  className="font-semibold text-white hover:text-jozi-cyan transition-colors"
+                  href={COMPANY_INFO.emails.accountsLink}
+                  className="font-semibold text-white hover:text-jozi-cyan transition-colors py-0.5 inline-block"
                 >
                   {COMPANY_INFO.emails.accounts}
                 </a>
@@ -162,20 +162,20 @@ export default function Footer() {
 
           {/* Column 4: Facility & Hours (Col span 3) */}
           <div className="lg:col-span-3">
-            <h4 className="text-sm font-bold uppercase tracking-wider text-jozi-cyan mb-5">
+            <h4 className="text-xs font-bold uppercase tracking-wider text-jozi-cyan mb-5">
               Midrand Hub
             </h4>
             <div className="space-y-3.5 text-xs text-slate-300">
               <div className="flex items-start gap-2.5">
                 <MapPin className="w-4 h-4 text-jozi-cyan shrink-0 mt-0.5" />
-                <span>
+                <span className="leading-relaxed">
                   The Home Gallery, 124 Richards Drive, Halfway House, Midrand, 1685, South Africa
                 </span>
               </div>
 
               <div className="flex items-center gap-2.5">
                 <Phone className="w-4 h-4 text-jozi-cyan shrink-0" />
-                <a href={COMPANY_INFO.phones.officeTelLink} className="hover:text-jozi-cyan">
+                <a href={COMPANY_INFO.phones.officeTelLink} className="hover:text-jozi-cyan transition-colors">
                   Office: {COMPANY_INFO.phones.office}
                 </a>
               </div>
@@ -186,7 +186,7 @@ export default function Footer() {
               </div>
 
               <div className="pt-2">
-                <span className="inline-block px-3 py-1 rounded-full bg-white/10 text-[11px] font-bold text-slate-300">
+                <span className="inline-block px-3 py-1.5 rounded-full bg-white/10 text-[11px] font-semibold text-slate-300">
                   Daily Cold-Chain Route Dispatch
                 </span>
               </div>
@@ -207,7 +207,7 @@ export default function Footer() {
             </a>
           </p>
 
-          <div className="flex items-center gap-6">
+          <div className="flex items-center gap-4 sm:gap-6 flex-wrap justify-center">
             <span>Fresh Milk Distribution</span>
             <span>•</span>
             <span>Mooi River Sourced</span>

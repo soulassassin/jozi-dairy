@@ -1,0 +1,207 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+enum Role {
+  SUPER_ADMIN
+  ACCOUNTS_MANAGER
+  OPERATIONS_MANAGER
+  SALES_REP
+  CLIENT
+}
+
+enum ClientType {
+  RETAILER
+  HOSPITALITY_CAFE
+  CATERING_CANTEEN
+  COMMERCIAL_BULK
+  INDIVIDUAL
+}
+
+enum PaymentTerms {
+  IMMEDIATE_COD
+  NET_7_DAYS
+  NET_15_DAYS
+  NET_30_DAYS
+}
+
+enum InvoiceStatus {
+  DRAFT
+  ISSUED
+  PAID
+  PARTIALLY_PAID
+  OVERDUE
+  VOID
+}
+
+enum PaymentMethod {
+  EFT
+  CASH
+  CARD
+  DEBIT_ORDER
+}
+
+enum NoteType {
+  CALL
+  MEETING
+  DISPATCH_NOTE
+  ACCOUNTS_NOTE
+}
+
+model User {
+  id           String    @id @default(cuid())
+  email        String    @unique
+  name         String
+  passwordHash String
+  role         Role      @default(CLIENT)
+  phone        String?
+  isActive     Boolean   @default(true)
+  createdAt    DateTime  @default(now())
+  updatedAt    DateTime  @updatedAt
+
+  client       Client?   @relation(fields: [clientId], references: [id])
+  clientId     String?
+  crmNotes     CrmNote[]
+}
+
+model Client {
+  id                 String          @id @default(cuid())
+  accountNumber      String          @unique // e.g. JD-C-1001
+  name               String          // Registered legal entity name
+  tradingName        String?         // Doing Business As (DBA)
+  vatNumber          String?         // SARS 10-digit VAT registration
+  registrationNumber String?         // CIPC registration (e.g. 2021/123456/07)
+  clientType         ClientType      @default(HOSPITALITY_CAFE)
+  contactPerson      String
+  email              String
+  phone              String
+  whatsapp           String?
+  billingAddress     String
+  deliveryAddress    String
+  deliveryInstructions String?
+  paymentTerms       PaymentTerms    @default(IMMEDIATE_COD)
+  creditLimit        Decimal         @default(0.00) @db.Decimal(10, 2)
+  currentBalance     Decimal         @default(0.00) @db.Decimal(10, 2)
+  isActive           Boolean         @default(true)
+  createdAt          DateTime        @default(now())
+  updatedAt          DateTime        @updatedAt
+
+  users              User[]
+  invoices           Invoice[]
+  payments           Payment[]
+  recurringPlans     RecurringPlan[]
+  crmNotes           CrmNote[]
+}
+
+model Product {
+  id                 String        @id @default(cuid())
+  sku                String        @unique // e.g. JD-MILK-FC-2L
+  name               String        // e.g. Full Cream Fresh Milk 2L
+  category           String        // milk, yoghurt, cream, amasi, juice, blend
+  packageSize        String        // 2 Litre Bottle, 1kg Tub, etc.
+  crateQuantity      Int           @default(9) // Units per standard dairy crate
+  unitPriceWholesale Decimal       @db.Decimal(10, 2)
+  unitPriceRetail    Decimal       @db.Decimal(10, 2)
+  isVatExempt        Boolean       @default(false) // SARS Section 11(1)(a): Plain liquid cow milk is 0% zero-rated VAT
+  stockOnHand        Int           @default(0)
+  reorderPoint       Int           @default(50)
+  isActive           Boolean       @default(true)
+  createdAt          DateTime      @default(now())
+  updatedAt          DateTime      @updatedAt
+
+  invoiceItems       InvoiceItem[]
+}
+
+model Invoice {
+  id            String        @id @default(cuid())
+  invoiceNumber String        @unique // SARS sequential numbering: JD-2026-0001
+  clientId      String
+  issueDate     DateTime      @default(now())
+  dueDate       DateTime
+  status        InvoiceStatus @default(DRAFT)
+  subtotal      Decimal       @db.Decimal(10, 2)
+  zeroRatedTotal Decimal      @default(0.00) @db.Decimal(10, 2) // Total of 0% VAT items (Fresh milk)
+  standardRatedTotal Decimal  @default(0.00) @db.Decimal(10, 2) // Total of 15% VAT items
+  vatTotal      Decimal       @default(0.00) @db.Decimal(10, 2) // 15% of standardRatedTotal
+  totalAmount   Decimal       @db.Decimal(10, 2)
+  amountPaid    Decimal       @default(0.00) @db.Decimal(10, 2)
+  balanceDue    Decimal       @db.Decimal(10, 2)
+  notes         String?
+  sarsCompliant Boolean       @default(true) // Confirms Tax Invoice header, legal VAT details, itemization
+  pdfUrl        String?
+  createdAt     DateTime      @default(now())
+  updatedAt     DateTime      @updatedAt
+
+  client        Client        @relation(fields: [clientId], references: [id], onDelete: Restrict)
+  items         InvoiceItem[]
+  payments      Payment[]
+}
+
+model InvoiceItem {
+  id          String   @id @default(cuid())
+  invoiceId   String
+  productId   String?
+  description String
+  quantity    Int
+  unitPrice   Decimal  @db.Decimal(10, 2)
+  vatRate     Decimal  @default(0.00) @db.Decimal(5, 2) // 0.00 for pure milk, 15.00 for juice/yoghurt
+  vatAmount   Decimal  @default(0.00) @db.Decimal(10, 2)
+  lineTotal   Decimal  @db.Decimal(10, 2) // Excl or Incl per SARS convention
+  createdAt   DateTime @default(now())
+
+  invoice     Invoice  @relation(fields: [invoiceId], references: [id], onDelete: Cascade)
+  product     Product? @relation(fields: [productId], references: [id], onDelete: SetNull)
+}
+
+model Payment {
+  id            String        @id @default(cuid())
+  receiptNumber String        @unique // JD-REC-YYYY-XXXX
+  invoiceId     String
+  clientId      String
+  amount        Decimal       @db.Decimal(10, 2)
+  paymentMethod PaymentMethod @default(EFT)
+  reference     String        // Bank statement payment reference / POP
+  paymentDate   DateTime      @default(now())
+  notes         String?
+  createdAt     DateTime      @default(now())
+
+  invoice       Invoice       @relation(fields: [invoiceId], references: [id], onDelete: Restrict)
+  client        Client        @relation(fields: [clientId], references: [id], onDelete: Restrict)
+}
+
+model RecurringPlan {
+  id           String    @id @default(cuid())
+  clientId     String
+  planName     String    // e.g. Daily Morning Milk Drop (3 Crates)
+  frequency    String    // DAILY, MON_WED_FRI, TUE_THU, WEEKLY
+  deliveryDays String[]  // ["MONDAY", "WEDNESDAY", "FRIDAY"]
+  isActive     Boolean   @default(true)
+  startDate    DateTime  @default(now())
+  endDate      DateTime?
+  nextRunDate  DateTime
+  itemsJson    String    // JSON serialized standing product quantities
+  createdAt    DateTime  @default(now())
+  updatedAt    DateTime  @updatedAt
+
+  client       Client    @relation(fields: [clientId], references: [id], onDelete: Cascade)
+}
+
+model CrmNote {
+  id        String   @id @default(cuid())
+  clientId  String
+  authorId  String?
+  note      String
+  type      NoteType @default(CALL)
+  createdAt DateTime @default(now())
+
+  client    Client   @relation(fields: [clientId], references: [id], onDelete: Cascade)
+  author    User?    @relation(fields: [authorId], references: [id], onDelete: SetNull)
+}
