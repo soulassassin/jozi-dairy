@@ -102,7 +102,7 @@ export default function WhoWeAreBento({ onSelectCategory }: WhoWeAreBentoProps) 
               <div className="flex items-center gap-4 mb-6">
                 <div className="relative w-16 h-16 rounded-2xl bg-white border border-slate-100 shadow-sm overflow-hidden flex items-center justify-center p-2 shrink-0">
                   <Image
-                    src="/assets/logo.svg"
+                    src="/assets/logo.png"
                     alt="Jozi Dairy Emblem"
                     fill
                     className="object-contain"

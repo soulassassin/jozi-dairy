@@ -62,7 +62,7 @@ export default function PrintInvoicePage({ params }: PrintInvoicePageProps) {
           <div>
             <div className="relative h-14 w-48 mb-3">
               <Image
-                src="/assets/logo.svg"
+                src="/assets/logo.png"
                 alt="Jozi Dairy"
                 fill
                 priority
