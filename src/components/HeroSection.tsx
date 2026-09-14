@@ -2,7 +2,8 @@
 
 import React from "react";
 import MilkCarton3D from "./MilkCarton3D";
-import { MessageCircle, ArrowRight, ShieldCheck, Snowflake, Truck, MapPin, Milk } from "lucide-react";
+import { ArrowRight, ShieldCheck, Snowflake, Truck, MapPin, Milk } from "lucide-react";
+import { WhatsAppIcon } from "@/components/icons/SocialIcons";
 import { COMPANY_INFO } from "@/data/dairyData";
 
 interface HeroSectionProps {
@@ -52,7 +53,7 @@ export default function HeroSection({ onOpenQuoteModal }: HeroSectionProps) {
                 rel="noopener noreferrer"
                 className="flex-1 sm:flex-none inline-flex items-center justify-center gap-2.5 px-7 py-3.5 rounded-xl bg-jozi-cyan hover:brightness-105 active:scale-[0.98] text-white font-bold text-sm md:text-base shadow-glow hover:shadow-glow-lg transition-all duration-200 ring-2 ring-offset-2 ring-jozi-cyan focus:outline-none min-h-[48px]"
               >
-                <MessageCircle className="w-5 h-5 fill-current shrink-0" />
+                <WhatsAppIcon className="w-5 h-5 fill-current shrink-0" />
                 <span>Order via WhatsApp</span>
               </a>
 

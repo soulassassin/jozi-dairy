@@ -32,6 +32,9 @@ export const metadata: Metadata = {
     "Catering milk distribution",
   ],
   authors: [{ name: "Jozi Dairy" }],
+  alternates: {
+    canonical: "https://www.jozidairy.co.za",
+  },
   openGraph: {
     title: "Jozi Dairy | Farm-Fresh Dairy Delivered Straight to Your Business & Home",
     description:
@@ -40,17 +43,37 @@ export const metadata: Metadata = {
     siteName: "Jozi Dairy",
     images: [
       {
-        url: "/assets/logo-original.jpeg",
+        url: "/og/home-preview.jpg",
         width: 1200,
         height: 630,
-        alt: "Jozi Dairy Logo",
+        alt: "Jozi Dairy - Farm-Fresh Milk & Commercial Dairy Distribution Midrand",
       },
     ],
     locale: "en_ZA",
     type: "website",
   },
+  twitter: {
+    card: "summary_large_image",
+    title: "Jozi Dairy | Fresh Dairy Distribution • Midrand, Johannesburg",
+    description:
+      "Daily refrigerated delivery of farm-fresh milk, cultured amasi, gourmet yoghurt, and fresh cream across Gauteng.",
+    images: ["/og/home-preview.jpg"],
+  },
   icons: {
-    icon: "/assets/logo-original.jpeg",
+    icon: [
+      { url: "/favicon.ico", sizes: "any" },
+      { url: "/favicon-32x32.png", sizes: "32x32", type: "image/png" },
+      { url: "/favicon-16x16.png", sizes: "16x16", type: "image/png" },
+    ],
+    apple: "/apple-touch-icon.png",
+    shortcut: "/favicon.ico",
+  },
+  manifest: "/site.webmanifest",
+  other: {
+    "geo.region": "ZA-GT",
+    "geo.placename": "Midrand, Johannesburg, Gauteng",
+    "geo.position": "-25.9984;28.1278",
+    "ICBM": "-25.9984, 28.1278",
   },
 };
 

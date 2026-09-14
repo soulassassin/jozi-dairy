@@ -8,7 +8,6 @@ import {
   Mail,
   Clock,
   MapPin,
-  MessageCircle,
   Menu,
   X,
   FileText,
@@ -17,7 +16,9 @@ import {
   Info,
   Package,
   Truck,
+  Sparkles,
 } from "lucide-react";
+import { WhatsAppIcon, FacebookIcon, InstagramIcon } from "@/components/icons/SocialIcons";
 import { COMPANY_INFO } from "@/data/dairyData";
 
 interface NavbarProps {
@@ -77,11 +78,41 @@ export default function Navbar({ onOpenQuoteModal }: NavbarProps) {
   }, []);
 
   const navLinks = [
-    { name: "Home", href: "#home", id: "home", icon: Home },
-    { name: "About Us", href: "#about", id: "about", icon: Info },
-    { name: "Products & Services", href: "#products", id: "products", icon: Package },
-    { name: "Mooi River Supply", href: "#provenance", id: "provenance", icon: Truck },
-    { name: "Contact & Directory", href: "#contact", id: "contact", icon: Phone },
+    {
+      name: "Home",
+      href: "#home",
+      id: "home",
+      icon: Home,
+      desc: "Overview & Midrand Hub",
+    },
+    {
+      name: "About Us",
+      href: "#about",
+      id: "about",
+      icon: Info,
+      desc: "Our Story & KwaZulu-Natal Roots",
+    },
+    {
+      name: "Products & Services",
+      href: "#products",
+      id: "products",
+      icon: Package,
+      desc: "Milk, Yogurt, Cream, Amasi & Juice",
+    },
+    {
+      name: "Mooi River Supply",
+      href: "#provenance",
+      id: "provenance",
+      icon: Truck,
+      desc: "Cold-Chain Logistics & Quality",
+    },
+    {
+      name: "Contact & Directory",
+      href: "#contact",
+      id: "contact",
+      icon: Phone,
+      desc: "Midrand Facility, Phones & Orders",
+    },
   ];
 
   return (
@@ -113,9 +144,9 @@ export default function Navbar({ onOpenQuoteModal }: NavbarProps) {
                 href={COMPANY_INFO.phones.whatsappLink}
                 target="_blank"
                 rel="noopener noreferrer"
-                className="flex items-center gap-2 text-green-400 hover:text-green-300 font-medium transition-colors"
+                className="flex items-center gap-2 text-[#25D366] hover:text-green-300 font-medium transition-colors"
               >
-                <MessageCircle className="w-3.5 h-3.5 fill-current shrink-0" />
+                <WhatsAppIcon className="w-3.5 h-3.5 fill-current shrink-0" />
                 <span>WhatsApp: {COMPANY_INFO.phones.whatsapp}</span>
               </a>
               <a
@@ -134,7 +165,7 @@ export default function Navbar({ onOpenQuoteModal }: NavbarProps) {
           className={`w-full transition-all duration-300 ${
             isScrolled
               ? "glass-nav py-2 shadow-card"
-              : "bg-white/95 backdrop-blur-md py-3 border-b border-jozi-navy/5"
+              : "bg-white/95 backdrop-blur-md py-2.5 sm:py-3 border-b border-jozi-navy/5"
           }`}
         >
           <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 flex items-center justify-between">
@@ -188,48 +219,54 @@ export default function Navbar({ onOpenQuoteModal }: NavbarProps) {
               })}
             </div>
 
-            {/* Right Action Trigger Buttons */}
+            {/* Right Action Trigger Buttons (Desktop) */}
             <div className="hidden sm:flex items-center gap-3">
               <a
                 href={COMPANY_INFO.phones.whatsappLink}
                 target="_blank"
                 rel="noopener noreferrer"
-                className="inline-flex items-center gap-2 px-4 py-2.5 rounded-xl bg-jozi-green/10 text-jozi-green hover:bg-[#2E7D32] hover:text-white transition-all text-xs md:text-sm font-semibold border border-jozi-green/20 min-h-[48px] focus-visible:ring-2 focus-visible:ring-[#2E7D32] focus:outline-none active:scale-[0.98]"
+                className="inline-flex items-center gap-2 px-4 py-2.5 rounded-xl bg-jozi-green/10 text-[#2E7D32] hover:bg-[#2E7D32] hover:text-white transition-all text-xs md:text-sm font-semibold border border-jozi-green/20 min-h-[44px] focus-visible:ring-2 focus-visible:ring-[#2E7D32] focus:outline-none active:scale-[0.98]"
               >
-                <MessageCircle className="w-4 h-4 fill-current shrink-0" />
+                <WhatsAppIcon className="w-4 h-4 fill-current shrink-0" />
                 <span>WhatsApp Us</span>
               </a>
 
+              {/* Cleaned up, premium Quote Button */}
               <button
                 type="button"
                 onClick={onOpenQuoteModal}
-                className="inline-flex items-center gap-2 px-5 py-2.5 rounded-xl bg-jozi-cyan hover:brightness-105 active:scale-[0.98] text-white text-xs md:text-sm font-semibold shadow-glow hover:shadow-glow-lg transition-all duration-200 min-h-[48px] focus-visible:ring-2 focus-visible:ring-offset-2 focus-visible:ring-[#00A8E8] focus:outline-none"
+                className="inline-flex items-center gap-2 px-5 py-2.5 rounded-xl bg-gradient-to-r from-jozi-cyan to-[#0091ca] hover:brightness-105 active:scale-[0.98] text-white text-xs md:text-sm font-semibold shadow-glow hover:shadow-glow-lg transition-all duration-200 min-h-[44px] border border-white/20 focus-visible:ring-2 focus-visible:ring-offset-2 focus-visible:ring-[#00A8E8] focus:outline-none"
               >
                 <FileText className="w-4 h-4 shrink-0" />
                 <span>Get a Quote</span>
               </button>
             </div>
 
-            {/* Mobile Hamburger Toggle & Quote Button */}
+            {/* Mobile Actions: Clean Quote Pill + Hamburger */}
             <div className="flex items-center gap-2 lg:hidden">
+              {/* Clean, well-proportioned mobile quote button */}
               <button
                 type="button"
                 onClick={onOpenQuoteModal}
-                className="px-3.5 py-2.5 rounded-xl bg-jozi-cyan hover:brightness-105 active:scale-[0.98] text-white text-xs font-bold shadow-sm min-h-[48px] inline-flex items-center justify-center focus-visible:ring-2 focus-visible:ring-offset-2 focus-visible:ring-jozi-cyan"
+                className="inline-flex items-center gap-1.5 px-3.5 py-2 rounded-xl bg-jozi-cyan/10 hover:bg-jozi-cyan text-jozi-cyan hover:text-white border border-jozi-cyan/30 text-xs font-bold transition-all min-h-[42px] active:scale-[0.97] focus-visible:ring-2 focus-visible:ring-jozi-cyan"
+                aria-label="Request a Quote"
               >
-                Quote
+                <FileText className="w-3.5 h-3.5 shrink-0" />
+                <span>Quote</span>
               </button>
+
+              {/* Mobile Hamburger Toggle */}
               <button
                 type="button"
                 onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
-                className="p-3 rounded-xl text-jozi-navy hover:bg-slate-100 active:bg-slate-200 transition-colors min-h-[48px] min-w-[48px] inline-flex items-center justify-center focus-visible:ring-2 focus-visible:ring-jozi-navy"
+                className="p-2.5 rounded-xl text-jozi-navy bg-slate-100 hover:bg-slate-200 active:bg-slate-300 transition-colors min-h-[42px] min-w-[42px] inline-flex items-center justify-center focus-visible:ring-2 focus-visible:ring-jozi-navy"
                 aria-label={mobileMenuOpen ? "Close navigation menu" : "Open navigation menu"}
                 aria-expanded={mobileMenuOpen}
               >
                 {mobileMenuOpen ? (
-                  <X className="w-6 h-6 shrink-0 text-jozi-navy" />
+                  <X className="w-5 h-5 shrink-0 text-jozi-navy" />
                 ) : (
-                  <Menu className="w-6 h-6 shrink-0 text-jozi-navy" />
+                  <Menu className="w-5 h-5 shrink-0 text-jozi-navy" />
                 )}
               </button>
             </div>
@@ -241,117 +278,181 @@ export default function Navbar({ onOpenQuoteModal }: NavbarProps) {
       {mobileMenuOpen && (
         <div
           onClick={() => setMobileMenuOpen(false)}
-          className="fixed inset-0 bg-jozi-navy/50 backdrop-blur-sm z-40 lg:hidden transition-opacity animate-in fade-in duration-200"
+          className="fixed inset-0 bg-jozi-navy/60 backdrop-blur-sm z-40 lg:hidden transition-opacity animate-in fade-in duration-200"
           aria-hidden="true"
         />
       )}
 
-      {/* Mobile Drawer Menu */}
+      {/* Enhanced Mobile Navigation Drawer */}
       {mobileMenuOpen && (
         <div
-          className="lg:hidden fixed top-[56px] sm:top-[64px] left-0 right-0 z-50 bg-white/98 backdrop-blur-2xl border-b border-slate-200 shadow-2xl px-5 py-5 max-h-[calc(100dvh-4rem)] overflow-y-auto animate-in slide-in-from-top-3 duration-200"
+          className="lg:hidden fixed top-[56px] sm:top-[64px] left-0 right-0 bottom-0 z-50 bg-white border-b border-slate-200 shadow-2xl flex flex-col justify-between overflow-y-auto animate-in slide-in-from-top-3 duration-200"
           role="dialog"
           aria-modal="true"
           aria-label="Mobile Navigation Menu"
         >
-          {/* Logo & Brand Header inside the Menu Drawer */}
-          <div className="flex items-center justify-between pb-4 border-b border-slate-100">
-            <Link
-              href="#home"
-              onClick={() => setMobileMenuOpen(false)}
-              className="flex items-center gap-3"
-            >
-              <Image
-                src="/assets/logo.png"
-                alt="Jozi Dairy Logo"
-                width={140}
-                height={94}
-                className="h-9 w-auto object-contain"
-              />
-              <div className="flex flex-col">
-                <span className="text-sm font-bold text-jozi-navy leading-tight font-display">
-                  Jozi Dairy
-                </span>
-                <span className="text-[11px] text-slate-500 font-medium">
-                  Midrand Hub • Cold Chain
+          {/* Scrollable Body */}
+          <div className="p-5 flex flex-col gap-4">
+            {/* Header with Location Status & Close Button (No duplicate logo) */}
+            <div className="flex items-center justify-between pb-3.5 border-b border-slate-100">
+              <div className="flex items-center gap-2">
+                <span className="w-2 h-2 rounded-full bg-emerald-500 animate-pulse" />
+                <span className="text-xs font-bold text-jozi-navy uppercase tracking-wider font-display">
+                  Midrand Hub • Direct Supply
                 </span>
               </div>
-            </Link>
-            <button
-              type="button"
-              onClick={() => setMobileMenuOpen(false)}
-              className="p-2 rounded-lg text-slate-400 hover:text-jozi-navy hover:bg-slate-100 transition-colors min-h-[44px] min-w-[44px] flex items-center justify-center"
-              aria-label="Close menu"
-            >
-              <X className="w-5 h-5" />
-            </button>
-          </div>
+              <button
+                type="button"
+                onClick={() => setMobileMenuOpen(false)}
+                className="p-2 rounded-xl text-slate-400 hover:text-jozi-navy hover:bg-slate-100 transition-colors min-h-[40px] min-w-[40px] flex items-center justify-center"
+                aria-label="Close menu"
+              >
+                <X className="w-5 h-5" />
+              </button>
+            </div>
 
-          {/* Navigation Links with Icons & Active Indicator */}
-          <nav className="flex flex-col gap-1 py-3" aria-label="Mobile Navigation">
-            {navLinks.map((link) => {
-              const Icon = link.icon;
-              const isActive = activeSection === link.id;
-              return (
-                <a
-                  key={link.name}
-                  href={link.href}
-                  onClick={() => setMobileMenuOpen(false)}
-                  className={`flex items-center justify-between py-3.5 px-3.5 rounded-xl text-sm font-semibold transition-all min-h-[48px] ${
-                    isActive
-                      ? "bg-jozi-cyan/10 text-jozi-cyan font-bold"
-                      : "text-jozi-navy hover:bg-slate-50 hover:text-jozi-cyan"
-                  }`}
-                >
-                  <div className="flex items-center gap-3">
-                    <Icon className={`w-4 h-4 ${isActive ? "text-jozi-cyan" : "text-slate-400"}`} />
-                    <span>{link.name}</span>
-                  </div>
-                  <ChevronRight
-                    className={`w-4 h-4 ${
-                      isActive ? "text-jozi-cyan" : "text-slate-300"
-                    }`}
-                  />
-                </a>
-              );
-            })}
-          </nav>
-
-          {/* Action CTAs inside Menu Drawer */}
-          <div className="pt-3 border-t border-slate-100 flex flex-col gap-2.5">
+            {/* Cleaned Up Primary Quote Action inside Menu */}
             <button
               type="button"
               onClick={() => {
                 setMobileMenuOpen(false);
                 onOpenQuoteModal();
               }}
-              className="w-full min-h-[48px] py-3.5 px-5 rounded-xl bg-jozi-cyan hover:brightness-105 active:scale-[0.98] text-white text-sm font-semibold shadow-glow flex items-center justify-center gap-2 transition-all duration-200"
+              className="w-full min-h-[50px] py-3 px-5 rounded-2xl bg-gradient-to-r from-jozi-cyan to-[#0091ca] hover:brightness-105 active:scale-[0.98] text-white font-bold text-sm shadow-glow flex items-center justify-between transition-all duration-200 border border-white/20"
             >
-              <FileText className="w-4 h-4 shrink-0" />
-              <span>Request Wholesale / Retail Quote</span>
+              <div className="flex items-center gap-2.5">
+                <div className="w-7 h-7 rounded-lg bg-white/20 flex items-center justify-center shrink-0">
+                  <FileText className="w-4 h-4 text-white" />
+                </div>
+                <div className="text-left">
+                  <div className="text-sm font-bold leading-tight">Request a Quote</div>
+                  <div className="text-[10px] text-white/80 font-normal">Wholesale & Commercial Pricing</div>
+                </div>
+              </div>
+              <Sparkles className="w-4 h-4 text-white/90 shrink-0" />
             </button>
 
-            <a
-              href={COMPANY_INFO.phones.whatsappLink}
-              target="_blank"
-              rel="noopener noreferrer"
-              className="w-full min-h-[48px] py-3.5 px-5 rounded-xl bg-[#2E7D32] hover:bg-[#276a2b] text-white text-sm font-semibold flex items-center justify-center gap-2 shadow-sm transition-all"
-            >
-              <MessageCircle className="w-4 h-4 fill-current shrink-0" />
-              <span>WhatsApp: {COMPANY_INFO.phones.whatsapp}</span>
-            </a>
+            {/* Structured Navigation Items with Subtitles */}
+            <div>
+              <div className="text-[11px] font-bold uppercase tracking-wider text-slate-400 mb-2 px-1">
+                Explore Sections
+              </div>
+              <nav className="flex flex-col gap-1.5" aria-label="Mobile Navigation">
+                {navLinks.map((link) => {
+                  const Icon = link.icon;
+                  const isActive = activeSection === link.id;
+                  return (
+                    <a
+                      key={link.name}
+                      href={link.href}
+                      onClick={() => setMobileMenuOpen(false)}
+                      className={`flex items-center justify-between p-3 rounded-2xl transition-all min-h-[52px] ${
+                        isActive
+                          ? "bg-jozi-cyan/10 border border-jozi-cyan/30 text-jozi-navy font-bold shadow-sm"
+                          : "text-slate-700 hover:bg-slate-50 hover:text-jozi-navy border border-transparent"
+                      }`}
+                    >
+                      <div className="flex items-center gap-3">
+                        <div
+                          className={`w-9 h-9 rounded-xl flex items-center justify-center shrink-0 transition-colors ${
+                            isActive
+                              ? "bg-jozi-cyan text-white shadow-sm"
+                              : "bg-slate-100 text-slate-500"
+                          }`}
+                        >
+                          <Icon className="w-4 h-4" />
+                        </div>
+                        <div className="flex flex-col text-left">
+                          <span className={`text-sm ${isActive ? "font-bold text-jozi-cyan" : "font-semibold"}`}>
+                            {link.name}
+                          </span>
+                          <span className="text-[10px] text-slate-400 font-normal">
+                            {link.desc}
+                          </span>
+                        </div>
+                      </div>
+                      <ChevronRight
+                        className={`w-4 h-4 shrink-0 ${
+                          isActive ? "text-jozi-cyan" : "text-slate-300"
+                        }`}
+                      />
+                    </a>
+                  );
+                })}
+              </nav>
+            </div>
 
-            <a
-              href={COMPANY_INFO.phones.officeTelLink}
-              className="w-full min-h-[48px] py-3 px-5 rounded-xl bg-slate-100 hover:bg-slate-200 text-jozi-navy text-sm font-semibold flex items-center justify-center gap-2 transition-colors"
-            >
-              <Phone className="w-4 h-4 text-jozi-cyan shrink-0" />
-              <span>Call Office: {COMPANY_INFO.phones.office}</span>
-            </a>
+            {/* Instant Contact Shortcuts */}
+            <div className="pt-2 border-t border-slate-100 flex flex-col gap-2">
+              <div className="text-[11px] font-bold uppercase tracking-wider text-slate-400 px-1">
+                Direct Contact
+              </div>
+              
+              <a
+                href={COMPANY_INFO.phones.whatsappLink}
+                target="_blank"
+                rel="noopener noreferrer"
+                className="w-full min-h-[46px] py-2.5 px-4 rounded-xl bg-[#25D366] hover:bg-[#20bd5a] active:scale-[0.98] text-white text-xs font-bold flex items-center justify-between shadow-sm transition-all"
+              >
+                <div className="flex items-center gap-2.5">
+                  <WhatsAppIcon className="w-4 h-4 fill-current shrink-0" />
+                  <span>Chat on WhatsApp Hotline</span>
+                </div>
+                <span className="text-[11px] bg-white/20 px-2 py-0.5 rounded-md font-semibold">
+                  065 234 2460
+                </span>
+              </a>
 
-            <div className="mt-2 text-center text-xs text-slate-500 flex flex-col gap-1">
-              <span>{COMPANY_INFO.hours} • Midrand Distribution Hub</span>
-              <span>Direct Cold-Chain Delivery across Gauteng</span>
+              <a
+                href={COMPANY_INFO.phones.officeTelLink}
+                className="w-full min-h-[46px] py-2.5 px-4 rounded-xl bg-slate-100 hover:bg-slate-200 text-jozi-navy text-xs font-semibold flex items-center justify-between transition-colors border border-slate-200"
+              >
+                <div className="flex items-center gap-2.5">
+                  <Phone className="w-4 h-4 text-jozi-cyan shrink-0" />
+                  <span>Call Midrand Office</span>
+                </div>
+                <span className="text-[11px] text-slate-500 font-medium">
+                  {COMPANY_INFO.phones.office}
+                </span>
+              </a>
+            </div>
+          </div>
+
+          {/* Drawer Bottom Bar: Operating Hours & Social Icons */}
+          <div className="p-4 bg-white border-t border-slate-100 flex items-center justify-between">
+            <div className="flex flex-col text-[11px] text-slate-500">
+              <span className="font-semibold text-slate-700">{COMPANY_INFO.hours}</span>
+              <span>124 Richards Dr, Midrand</span>
+            </div>
+
+            <div className="flex items-center gap-2">
+              <a
+                href={COMPANY_INFO.social.facebook}
+                target="_blank"
+                rel="noopener noreferrer"
+                className="w-8 h-8 rounded-full bg-white border border-slate-200 hover:bg-[#1877F2] hover:text-white text-slate-600 flex items-center justify-center transition-colors shadow-sm"
+                aria-label="Facebook"
+              >
+                <FacebookIcon className="w-3.5 h-3.5 fill-current" />
+              </a>
+              <a
+                href={COMPANY_INFO.social.instagram}
+                target="_blank"
+                rel="noopener noreferrer"
+                className="w-8 h-8 rounded-full bg-white border border-slate-200 hover:bg-gradient-to-tr hover:from-[#f09433] hover:via-[#dc2743] hover:to-[#bc1888] hover:text-white text-slate-600 flex items-center justify-center transition-colors shadow-sm"
+                aria-label="Instagram"
+              >
+                <InstagramIcon className="w-3.5 h-3.5 fill-current" />
+              </a>
+              <a
+                href={COMPANY_INFO.social.whatsapp}
+                target="_blank"
+                rel="noopener noreferrer"
+                className="w-8 h-8 rounded-full bg-emerald-50 border border-emerald-200 text-[#25D366] hover:bg-[#25D366] hover:text-white flex items-center justify-center transition-colors shadow-sm"
+                aria-label="WhatsApp"
+              >
+                <WhatsAppIcon className="w-3.5 h-3.5 fill-current" />
+              </a>
             </div>
           </div>
         </div>

@@ -1,7 +1,8 @@
 "use client";
 
 import React, { useState } from "react";
-import { MessageCircle, Phone, X } from "lucide-react";
+import { Phone, X } from "lucide-react";
+import { WhatsAppIcon } from "@/components/icons/SocialIcons";
 import { COMPANY_INFO } from "@/data/dairyData";
 
 export default function FloatingWhatsApp() {
@@ -24,8 +25,8 @@ export default function FloatingWhatsApp() {
         <div className="mb-3 w-80 sm:w-88 bg-white rounded-3xl shadow-2xl border border-slate-200/90 p-5 animate-in slide-in-from-bottom-5 duration-200">
           <div className="flex items-center justify-between mb-3 pb-2 border-b border-slate-100">
             <div className="flex items-center gap-2">
-              <div className="w-8 h-8 rounded-full bg-[#2E7D32] text-white flex items-center justify-center shrink-0">
-                <MessageCircle className="w-4 h-4 fill-current shrink-0" />
+              <div className="w-8 h-8 rounded-full bg-[#25D366] text-white flex items-center justify-center shrink-0 shadow-sm">
+                <WhatsAppIcon className="w-4 h-4 fill-current shrink-0" />
               </div>
               <div>
                 <h4 className="text-xs font-bold text-jozi-navy">Jozi Dairy Support</h4>
@@ -68,9 +69,9 @@ export default function FloatingWhatsApp() {
               href={COMPANY_INFO.phones.whatsappLink}
               target="_blank"
               rel="noopener noreferrer"
-              className="flex-1 min-h-[44px] py-2.5 px-3 rounded-xl bg-[#2E7D32] hover:bg-[#276a2b] text-white text-xs font-semibold inline-flex items-center justify-center gap-1.5 shadow-sm transition-all"
+              className="flex-1 min-h-[44px] py-2.5 px-3 rounded-xl bg-[#25D366] hover:bg-[#20bd5a] text-white text-xs font-semibold inline-flex items-center justify-center gap-1.5 shadow-sm transition-all"
             >
-              <MessageCircle className="w-4 h-4 fill-current shrink-0" />
+              <WhatsAppIcon className="w-4 h-4 fill-current shrink-0" />
               <span>Open Chat</span>
             </a>
 
@@ -91,7 +92,7 @@ export default function FloatingWhatsApp() {
         <button
           type="button"
           onClick={() => setIsOpen(!isOpen)}
-          className="group relative inline-flex items-center justify-center gap-2.5 p-3.5 sm:px-5 sm:py-3.5 rounded-full bg-[#2E7D32] hover:bg-[#276a2b] active:scale-[0.98] text-white shadow-xl hover:shadow-2xl transition-all duration-300 min-h-[48px] min-w-[48px] focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-[#2E7D32]"
+          className="group relative inline-flex items-center justify-center gap-2.5 p-3.5 sm:px-5 sm:py-3.5 rounded-full bg-[#25D366] hover:bg-[#20bd5a] active:scale-[0.98] text-white shadow-xl hover:shadow-2xl transition-all duration-300 min-h-[48px] min-w-[48px] focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-[#25D366]"
           aria-label="Toggle WhatsApp Customer Desk"
         >
           <span className="relative flex h-3 w-3">
@@ -99,7 +100,7 @@ export default function FloatingWhatsApp() {
             <span className="relative inline-flex rounded-full h-3 w-3 bg-white"></span>
           </span>
 
-          <MessageCircle className="w-5 h-5 fill-current shrink-0" />
+          <WhatsAppIcon className="w-5 h-5 fill-current shrink-0" />
           <span className="text-xs font-bold tracking-wide hidden sm:inline">
             WhatsApp Desk
           </span>

@@ -2,7 +2,8 @@
 
 import React, { useState } from "react";
 import confetti from "canvas-confetti";
-import { X, Check, Calculator, MessageCircle, Mail, Sparkles, Building2, Package } from "lucide-react";
+import { X, Check, Calculator, Mail, Sparkles, Building2, Package } from "lucide-react";
+import { WhatsAppIcon } from "@/components/icons/SocialIcons";
 import { COMPANY_INFO, PRODUCTS } from "@/data/dairyData";
 
 interface QuoteModalProps {
@@ -111,7 +112,7 @@ export default function QuoteModal({ isOpen, onClose, initialProduct }: QuoteMod
                 rel="noopener noreferrer"
                 className="w-full sm:w-auto min-h-[48px] px-6 py-3.5 rounded-xl bg-[#2E7D32] hover:bg-[#276a2b] text-white text-sm font-semibold inline-flex items-center justify-center gap-2 shadow-sm transition-all"
               >
-                <MessageCircle className="w-4 h-4 fill-current shrink-0" />
+                <WhatsAppIcon className="w-4 h-4 fill-current shrink-0" />
                 <span>Transmit Immediately via WhatsApp</span>
               </a>
 
@@ -266,7 +267,7 @@ export default function QuoteModal({ isOpen, onClose, initialProduct }: QuoteMod
                 rel="noopener noreferrer"
                 className="w-full sm:w-auto min-h-[48px] px-6 py-3.5 rounded-xl bg-[#2E7D32] hover:bg-[#276a2b] active:scale-[0.98] text-white font-semibold text-sm inline-flex items-center justify-center gap-2 shadow-sm transition-all"
               >
-                <MessageCircle className="w-4 h-4 fill-current shrink-0" />
+                <WhatsAppIcon className="w-4 h-4 fill-current shrink-0" />
                 <span>Send on WhatsApp</span>
               </a>
             </div>

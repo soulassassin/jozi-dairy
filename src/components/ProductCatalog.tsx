@@ -6,7 +6,6 @@ import {
   Search,
   Filter,
   Check,
-  MessageCircle,
   Sparkles,
   MapPin,
   Layers,
@@ -14,6 +13,7 @@ import {
   Info,
   X,
 } from "lucide-react";
+import { WhatsAppIcon } from "@/components/icons/SocialIcons";
 import { PRODUCTS, ProductItem, COMPANY_INFO } from "@/data/dairyData";
 
 interface ProductCatalogProps {
@@ -256,7 +256,7 @@ export default function ProductCatalog({
                     rel="noopener noreferrer"
                     className="flex-1 inline-flex items-center justify-center gap-2 py-3 px-3 rounded-xl bg-jozi-green/10 hover:bg-jozi-green hover:text-white text-jozi-green font-semibold text-xs md:text-sm transition-all border border-jozi-green/20 min-h-[48px] active:scale-[0.98] focus-visible:ring-2 focus-visible:ring-jozi-green focus:outline-none"
                   >
-                    <MessageCircle className="w-4 h-4 fill-current shrink-0" />
+                    <WhatsAppIcon className="w-4 h-4 fill-current shrink-0" />
                     <span>Order on WhatsApp</span>
                   </a>
 
@@ -346,7 +346,7 @@ export default function ProductCatalog({
                 rel="noopener noreferrer"
                 className="min-h-[48px] px-6 py-3 rounded-xl bg-jozi-green hover:bg-[#276a2b] text-white text-sm font-semibold inline-flex items-center justify-center gap-2 shadow-sm transition-all"
               >
-                <MessageCircle className="w-4 h-4 fill-current shrink-0" />
+                <WhatsAppIcon className="w-4 h-4 fill-current shrink-0" />
                 <span>Inquire on WhatsApp</span>
               </a>
             </div>

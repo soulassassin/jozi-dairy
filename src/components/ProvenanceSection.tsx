@@ -14,8 +14,8 @@ import {
   Building2,
   Store,
   ArrowRight,
-  MessageCircle,
 } from "lucide-react";
+import { WhatsAppIcon } from "@/components/icons/SocialIcons";
 import { COMPANY_INFO } from "@/data/dairyData";
 
 export default function ProvenanceSection() {
@@ -159,7 +159,7 @@ export default function ProvenanceSection() {
               rel="noopener noreferrer"
               className="inline-flex items-center justify-center gap-2 px-6 py-3.5 rounded-xl bg-jozi-cyan hover:brightness-105 active:scale-[0.98] text-white font-semibold text-sm shadow-glow hover:shadow-glow-lg transition-all duration-200 min-h-[48px] ring-2 ring-offset-2 ring-jozi-cyan focus:outline-none"
             >
-              <MessageCircle className="w-4 h-4 fill-current shrink-0" />
+              <WhatsAppIcon className="w-4 h-4 fill-current shrink-0" />
               <span>Order from Midrand Hub</span>
             </a>
             <a

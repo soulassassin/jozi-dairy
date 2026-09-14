@@ -8,11 +8,11 @@ import {
   Mail,
   MapPin,
   Clock,
-  MessageCircle,
   ExternalLink,
   ChevronRight,
   Heart,
 } from "lucide-react";
+import { FacebookIcon, InstagramIcon, WhatsAppIcon } from "@/components/icons/SocialIcons";
 import { COMPANY_INFO, SERVICE_BADGES } from "@/data/dairyData";
 
 export default function Footer() {
@@ -47,28 +47,28 @@ export default function Footer() {
                 href={COMPANY_INFO.social.facebook}
                 target="_blank"
                 rel="noopener noreferrer"
-                className="w-11 h-11 rounded-full bg-white/10 hover:bg-jozi-cyan text-white flex items-center justify-center text-xs font-bold transition-colors min-h-[44px] min-w-[44px]"
-                aria-label="Facebook"
+                className="w-11 h-11 rounded-full bg-white/10 hover:bg-[#1877F2] text-white flex items-center justify-center transition-all duration-200 hover:scale-105 active:scale-95 shadow-sm min-h-[44px] min-w-[44px]"
+                aria-label="Visit Jozi Dairy on Facebook"
               >
-                FB
+                <FacebookIcon className="w-5 h-5 fill-current" />
               </a>
               <a
                 href={COMPANY_INFO.social.instagram}
                 target="_blank"
                 rel="noopener noreferrer"
-                className="w-11 h-11 rounded-full bg-white/10 hover:bg-jozi-cyan text-white flex items-center justify-center text-xs font-bold transition-colors min-h-[44px] min-w-[44px]"
-                aria-label="Instagram"
+                className="w-11 h-11 rounded-full bg-white/10 hover:bg-gradient-to-tr hover:from-[#f09433] hover:via-[#dc2743] hover:to-[#bc1888] text-white flex items-center justify-center transition-all duration-200 hover:scale-105 active:scale-95 shadow-sm min-h-[44px] min-w-[44px]"
+                aria-label="Visit Jozi Dairy on Instagram"
               >
-                IG
+                <InstagramIcon className="w-5 h-5 fill-current" />
               </a>
               <a
                 href={COMPANY_INFO.social.whatsapp}
                 target="_blank"
                 rel="noopener noreferrer"
-                className="w-11 h-11 rounded-full bg-green-500/20 hover:bg-green-500 text-green-400 hover:text-white flex items-center justify-center text-xs font-bold transition-colors min-h-[44px] min-w-[44px]"
-                aria-label="WhatsApp"
+                className="w-11 h-11 rounded-full bg-[#25D366]/20 hover:bg-[#25D366] text-[#25D366] hover:text-white flex items-center justify-center transition-all duration-200 hover:scale-105 active:scale-95 shadow-sm min-h-[44px] min-w-[44px]"
+                aria-label="Chat with Jozi Dairy on WhatsApp"
               >
-                WA
+                <WhatsAppIcon className="w-5 h-5 fill-current" />
               </a>
             </div>
           </div>
@@ -126,7 +126,7 @@ export default function Footer() {
                   rel="noopener noreferrer"
                   className="font-bold text-green-400 hover:text-green-300 flex items-center gap-1.5 py-0.5"
                 >
-                  <MessageCircle className="w-3.5 h-3.5 fill-current shrink-0" />
+                  <WhatsAppIcon className="w-3.5 h-3.5 fill-current shrink-0" />
                   <span>065 234 2460</span>
                 </a>
               </li>

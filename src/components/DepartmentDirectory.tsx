@@ -5,7 +5,6 @@ import confetti from "canvas-confetti";
 import {
   Phone,
   Mail,
-  MessageCircle,
   MapPin,
   Clock,
   Send,
@@ -16,6 +15,7 @@ import {
   ArrowUpRight,
   Sparkles,
 } from "lucide-react";
+import { WhatsAppIcon } from "@/components/icons/SocialIcons";
 import { COMPANY_INFO, DEPARTMENTS } from "@/data/dairyData";
 
 export default function DepartmentDirectory() {
@@ -114,7 +114,7 @@ export default function DepartmentDirectory() {
                       title="Open in WhatsApp"
                       aria-label="Open in WhatsApp"
                     >
-                      <MessageCircle className="w-4 h-4 fill-current shrink-0" />
+                      <WhatsAppIcon className="w-4 h-4 fill-current shrink-0" />
                     </a>
                   )}
                 </div>
@@ -206,7 +206,7 @@ export default function DepartmentDirectory() {
                 rel="noopener noreferrer"
                 className="w-full min-h-[48px] py-3.5 px-5 rounded-xl bg-jozi-green hover:bg-[#276a2b] active:scale-[0.98] text-white font-semibold text-sm inline-flex items-center justify-center gap-2 shadow-sm transition-all"
               >
-                <MessageCircle className="w-4 h-4 fill-current shrink-0" />
+                <WhatsAppIcon className="w-4 h-4 fill-current shrink-0" />
                 <span>Instant WhatsApp Dispatch (065 234 2460)</span>
               </a>
 
@@ -254,7 +254,7 @@ export default function DepartmentDirectory() {
                     rel="noopener noreferrer"
                     className="w-full sm:w-auto min-h-[48px] px-6 py-3 rounded-xl bg-jozi-green text-white text-sm font-semibold inline-flex items-center justify-center gap-2 shadow-sm hover:bg-[#276a2b] transition-all"
                   >
-                    <MessageCircle className="w-4 h-4 fill-current shrink-0" />
+                    <WhatsAppIcon className="w-4 h-4 fill-current shrink-0" />
                     <span>Also Send to WhatsApp Hotline</span>
                   </a>
 
