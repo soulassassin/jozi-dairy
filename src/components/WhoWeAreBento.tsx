@@ -33,6 +33,8 @@ const renderServiceIcon = (iconKey?: string) => {
       return <Sparkles className="w-4 h-4 shrink-0 text-jozi-cyan group-hover:text-white transition-colors" />;
     case "amasi":
       return <Droplets className="w-4 h-4 shrink-0 text-jozi-green group-hover:text-white transition-colors" />;
+    case "cheese":
+      return <Award className="w-4 h-4 shrink-0 text-jozi-amber group-hover:text-white transition-colors" />;
     case "juice":
       return <Citrus className="w-4 h-4 shrink-0 text-jozi-amber group-hover:text-white transition-colors" />;
     case "blend":

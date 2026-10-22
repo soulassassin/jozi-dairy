@@ -80,34 +80,40 @@ export default function Footer() {
             </h4>
             <ul className="space-y-3 text-sm text-slate-300">
               <li>
-                <a href="#home" className="hover:text-jozi-cyan transition-colors flex items-center gap-1.5 py-1">
+                <Link href="/#home" className="hover:text-jozi-cyan transition-colors flex items-center gap-1.5 py-1">
                   <ChevronRight className="w-3.5 h-3.5 text-slate-500 shrink-0" />
                   <span>Home</span>
-                </a>
+                </Link>
               </li>
               <li>
-                <a href="#about" className="hover:text-jozi-cyan transition-colors flex items-center gap-1.5 py-1">
+                <Link href="/#about" className="hover:text-jozi-cyan transition-colors flex items-center gap-1.5 py-1">
                   <ChevronRight className="w-3.5 h-3.5 text-slate-500 shrink-0" />
                   <span>About Us</span>
-                </a>
+                </Link>
               </li>
               <li>
-                <a href="#products" className="hover:text-jozi-cyan transition-colors flex items-center gap-1.5 py-1">
+                <Link href="/#products" className="hover:text-jozi-cyan transition-colors flex items-center gap-1.5 py-1">
                   <ChevronRight className="w-3.5 h-3.5 text-slate-500 shrink-0" />
-                  <span>Services & Products</span>
-                </a>
+                  <span>Products & Services</span>
+                </Link>
               </li>
               <li>
-                <a href="#provenance" className="hover:text-jozi-cyan transition-colors flex items-center gap-1.5 py-1">
+                <Link href="/cheese" className="hover:text-jozi-cyan transition-colors flex items-center gap-1.5 py-1 text-jozi-amber font-medium">
+                  <ChevronRight className="w-3.5 h-3.5 text-jozi-amber shrink-0" />
+                  <span>Wholesale Cheese Selection</span>
+                </Link>
+              </li>
+              <li>
+                <Link href="/#provenance" className="hover:text-jozi-cyan transition-colors flex items-center gap-1.5 py-1">
                   <ChevronRight className="w-3.5 h-3.5 text-slate-500 shrink-0" />
                   <span>Mooi River Supply</span>
-                </a>
+                </Link>
               </li>
               <li>
-                <a href="#contact" className="hover:text-jozi-cyan transition-colors flex items-center gap-1.5 py-1">
+                <Link href="/#contact" className="hover:text-jozi-cyan transition-colors flex items-center gap-1.5 py-1">
                   <ChevronRight className="w-3.5 h-3.5 text-slate-500 shrink-0" />
                   <span>Contact Us</span>
-                </a>
+                </Link>
               </li>
             </ul>
           </div>

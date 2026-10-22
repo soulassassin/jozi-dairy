@@ -30,6 +30,9 @@ export default function DepartmentDirectory() {
 
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [submitted, setSubmitted] = useState(false);
+  const [submitError, setSubmitError] = useState("");
+  // Hidden from real visitors; only a bot fills this in.
+  const [companyWebsite, setCompanyWebsite] = useState("");
 
   const departmentsList = [
     { label: "Operations & Order Queries", email: COMPANY_INFO.emails.operations },
@@ -38,24 +41,58 @@ export default function DepartmentDirectory() {
     { label: "General Inquiries / Support", email: COMPANY_INFO.emails.operations },
   ];
 
-  const handleSubmit = (e: React.FormEvent) => {
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     setIsSubmitting(true);
+    setSubmitError("");
 
-    setTimeout(() => {
-      setIsSubmitting(false);
-      setSubmitted(true);
-      try {
-        confetti({
-          particleCount: 80,
-          spread: 70,
-          origin: { y: 0.6 },
-          colors: ["#00a8e8", "#0c2340", "#f9a825", "#2e7d32"],
-        });
-      } catch (err) {
-        // ignore confetti if blocked
+    // Record the enquiry in the CRM so the team has it even if the visitor
+    // never sends the WhatsApp message or the mailto draft.
+    try {
+      const response = await fetch("/api/inquiries", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          source: "WEBSITE_FORM",
+          contactName: formData.name,
+          company: formData.businessName,
+          phone: formData.phone,
+          email: formData.email,
+          department: formData.department,
+          message: formData.message,
+          companyWebsite,
+        }),
+      });
+
+      if (!response.ok) {
+        const data = await response.json().catch(() => null);
+        setSubmitError(
+          data?.error ??
+            "We could not record that enquiry. Please phone or WhatsApp us instead."
+        );
+        setIsSubmitting(false);
+        return;
       }
-    }, 600);
+    } catch {
+      setSubmitError(
+        "We could not reach our server. Please phone or WhatsApp us instead."
+      );
+      setIsSubmitting(false);
+      return;
+    }
+
+    setIsSubmitting(false);
+    setSubmitted(true);
+    try {
+      confetti({
+        particleCount: 80,
+        spread: 70,
+        origin: { y: 0.6 },
+        colors: ["#00a8e8", "#0c2340", "#f9a825", "#2e7d32"],
+      });
+    } catch (err) {
+      // ignore confetti if blocked
+    }
   };
 
   const getWhatsAppForwardLink = () => {
@@ -368,6 +405,29 @@ export default function DepartmentDirectory() {
                     className="w-full px-4 py-3 rounded-xl border border-slate-200 bg-white text-slate-800 placeholder-slate-400 focus:outline-none focus:ring-2 focus:ring-[#00A8E8] focus:border-transparent transition-all duration-150 text-sm md:text-base resize-none"
                   ></textarea>
                 </div>
+
+                {/* Honeypot: hidden from people, irresistible to bots. */}
+                <div className="hidden" aria-hidden="true">
+                  <label htmlFor="companyWebsite">Company website</label>
+                  <input
+                    id="companyWebsite"
+                    name="companyWebsite"
+                    type="text"
+                    tabIndex={-1}
+                    autoComplete="off"
+                    value={companyWebsite}
+                    onChange={(e) => setCompanyWebsite(e.target.value)}
+                  />
+                </div>
+
+                {submitError ? (
+                  <p
+                    role="alert"
+                    className="rounded-xl bg-red-50 px-4 py-3 text-sm text-red-700"
+                  >
+                    {submitError}
+                  </p>
+                ) : null}
 
                 <button
                   type="submit"

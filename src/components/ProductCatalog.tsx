@@ -2,6 +2,7 @@
 
 import React, { useState, useMemo } from "react";
 import Image from "next/image";
+import Link from "next/link";
 import {
   Search,
   Filter,
@@ -12,6 +13,7 @@ import {
   ChevronDown,
   Info,
   X,
+  ArrowRight,
 } from "lucide-react";
 import { WhatsAppIcon } from "@/components/icons/SocialIcons";
 import { PRODUCTS, ProductItem, COMPANY_INFO } from "@/data/dairyData";
@@ -36,6 +38,7 @@ export default function ProductCatalog({
     { id: "yoghurt", label: "Yoghurt" },
     { id: "cream", label: "Fresh Cream" },
     { id: "amasi", label: "Amasi & Buttermilk" },
+    { id: "cheese", label: "Wholesale Cheese" },
     { id: "juice", label: "100% Juice Blend" },
     { id: "blend", label: "Dairy Blend" },
   ];
@@ -58,6 +61,13 @@ export default function ProductCatalog({
       return matchesCategory && matchesSearch;
     });
   }, [selectedCategory, searchQuery]);
+
+  const getProductPageUrl = (item: ProductItem) => {
+    if (item.category === "cheese") return "/cheese";
+    if (item.id === "amasi-buttermilk") return "/products/amasi";
+    if (item.id === "spring-meadow-juice") return "/products/juice";
+    return `/products/${item.id}`;
+  };
 
   const getWhatsAppProductUrl = (productName: string) => {
     const text = `Hello Jozi Dairy, I would like to inquire about ordering / pricing for: *${productName}*. Please provide wholesale / retail supply availability.`;
@@ -162,9 +172,11 @@ export default function ProductCatalog({
               {/* Product Card Content */}
               <div className="p-5 sm:p-7 flex-1 flex flex-col justify-between">
                 <div>
-                  <h3 className="text-xl font-bold text-jozi-navy mb-1.5 font-display group-hover:text-jozi-cyan transition-colors">
-                    {product.name}
-                  </h3>
+                  <Link href={getProductPageUrl(product)}>
+                    <h3 className="text-xl font-bold text-jozi-navy mb-1.5 font-display hover:text-jozi-cyan transition-colors">
+                      {product.name}
+                    </h3>
+                  </Link>
                   <p className="text-xs text-slate-500 font-semibold mb-3 leading-relaxed">
                     {product.subtitle}
                   </p>
@@ -246,6 +258,17 @@ export default function ProductCatalog({
                       </div>
                     </div>
                   )}
+                </div>
+
+                {/* Link to Dedicated Product Page */}
+                <div className="mb-4">
+                  <Link
+                    href={getProductPageUrl(product)}
+                    className="inline-flex items-center gap-1.5 text-xs font-bold text-jozi-cyan hover:text-jozi-navy transition-colors group/link"
+                  >
+                    <span>View Full Specs & Pack Formats</span>
+                    <ArrowRight className="w-3.5 h-3.5 transition-transform group-hover/link:translate-x-1" />
+                  </Link>
                 </div>
 
                 {/* Card Action Buttons */}

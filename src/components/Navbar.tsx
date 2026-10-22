@@ -3,6 +3,7 @@
 import React, { useState, useEffect } from "react";
 import Image from "next/image";
 import Link from "next/link";
+import { usePathname } from "next/navigation";
 import {
   Phone,
   Mail,
@@ -12,11 +13,18 @@ import {
   X,
   FileText,
   ChevronRight,
+  ChevronDown,
   Home,
   Info,
   Package,
   Truck,
   Sparkles,
+  Award,
+  Milk,
+  Layers,
+  Droplets,
+  Citrus,
+  ArrowRight,
 } from "lucide-react";
 import { WhatsAppIcon, FacebookIcon, InstagramIcon } from "@/components/icons/SocialIcons";
 import { COMPANY_INFO } from "@/data/dairyData";
@@ -25,10 +33,79 @@ interface NavbarProps {
   onOpenQuoteModal: () => void;
 }
 
+const PRODUCT_DROPDOWN_ITEMS = [
+  {
+    name: "Fresh Milk",
+    href: "/products/fresh-milk",
+    desc: "Full Cream & Low Fat 2L & 1L Sachets",
+    badge: "Mooi River",
+    icon: Milk,
+    color: "text-jozi-cyan",
+    bg: "bg-cyan-50",
+  },
+  {
+    name: "Yoghurt Selection",
+    href: "/products/yoghurt",
+    desc: "10+ Flavours • Cups, Tubs & 5kg Buckets",
+    badge: "10 Flavours",
+    icon: Layers,
+    color: "text-amber-600",
+    bg: "bg-amber-50",
+  },
+  {
+    name: "Fresh Cream",
+    href: "/products/fresh-cream",
+    desc: "1L Pure whipping & culinary cream (35%+)",
+    badge: "Pure Cream",
+    icon: Sparkles,
+    color: "text-jozi-cyan",
+    bg: "bg-cyan-50",
+  },
+  {
+    name: "Cultured Amasi & Buttermilk",
+    href: "/products/amasi",
+    desc: "Traditional thick-set cultured dairy 1kg & 2kg",
+    badge: "Traditional",
+    icon: Droplets,
+    color: "text-green-600",
+    bg: "bg-green-50",
+  },
+  {
+    name: "Wholesale Cheese Selection",
+    href: "/cheese",
+    desc: "Mature Cheddar, Gouda, Mozzarella & Feta",
+    badge: "Specialty Page",
+    icon: Award,
+    color: "text-amber-500",
+    bg: "bg-amber-50",
+  },
+  {
+    name: "100% Fruit Juice Blend",
+    href: "/products/juice",
+    desc: "Spring Meadow Dairy pure fruit juice 1.5L",
+    badge: "100% Blend",
+    icon: Citrus,
+    color: "text-orange-500",
+    bg: "bg-orange-50",
+  },
+  {
+    name: "Dairy Blend",
+    href: "/products/dairy-blend",
+    desc: "High-yield commercial beverage blend",
+    badge: "Bulk Value",
+    icon: Package,
+    color: "text-slate-600",
+    bg: "bg-slate-100",
+  },
+];
+
 export default function Navbar({ onOpenQuoteModal }: NavbarProps) {
+  const pathname = usePathname();
   const [isScrolled, setIsScrolled] = useState(false);
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
   const [activeSection, setActiveSection] = useState<string>("home");
+  const [productsDropdownOpen, setProductsDropdownOpen] = useState(false);
+  const [mobileProductsOpen, setMobileProductsOpen] = useState(false);
 
   useEffect(() => {
     const handleScroll = () => {
@@ -40,6 +117,7 @@ export default function Navbar({ onOpenQuoteModal }: NavbarProps) {
 
   // Scroll spy to highlight active menu section
   useEffect(() => {
+    if (pathname !== "/") return;
     const sectionIds = ["home", "about", "products", "provenance", "contact"];
     const handleScrollSpy = () => {
       const scrollPosition = window.scrollY + 140;
@@ -54,7 +132,7 @@ export default function Navbar({ onOpenQuoteModal }: NavbarProps) {
     window.addEventListener("scroll", handleScrollSpy, { passive: true });
     handleScrollSpy();
     return () => window.removeEventListener("scroll", handleScrollSpy);
-  }, []);
+  }, [pathname]);
 
   // Prevent background scroll when mobile drawer is open
   useEffect(() => {
@@ -71,44 +149,58 @@ export default function Navbar({ onOpenQuoteModal }: NavbarProps) {
   // Close on Escape key press
   useEffect(() => {
     const handleKeyDown = (e: KeyboardEvent) => {
-      if (e.key === "Escape") setMobileMenuOpen(false);
+      if (e.key === "Escape") {
+        setMobileMenuOpen(false);
+        setProductsDropdownOpen(false);
+      }
     };
     window.addEventListener("keydown", handleKeyDown);
     return () => window.removeEventListener("keydown", handleKeyDown);
   }, []);
 
-  const navLinks = [
+  interface NavLinkItem {
+    name: string;
+    href: string;
+    id: string;
+    icon: React.ComponentType<{ className?: string }>;
+    desc: string;
+    badge?: string;
+    isDropdown?: boolean;
+  }
+
+  const navLinks: NavLinkItem[] = [
     {
       name: "Home",
-      href: "#home",
+      href: "/#home",
       id: "home",
       icon: Home,
       desc: "Overview & Midrand Hub",
     },
     {
       name: "About Us",
-      href: "#about",
+      href: "/#about",
       id: "about",
       icon: Info,
       desc: "Our Story & KwaZulu-Natal Roots",
     },
     {
       name: "Products & Services",
-      href: "#products",
+      href: "/#products",
       id: "products",
       icon: Package,
-      desc: "Milk, Yogurt, Cream, Amasi & Juice",
+      desc: "Milk, Yogurt, Cream, Amasi, Cheese & Juice",
+      isDropdown: true,
     },
     {
       name: "Mooi River Supply",
-      href: "#provenance",
+      href: "/#provenance",
       id: "provenance",
       icon: Truck,
       desc: "Cold-Chain Logistics & Quality",
     },
     {
       name: "Contact & Directory",
-      href: "#contact",
+      href: "/#contact",
       id: "contact",
       icon: Phone,
       desc: "Midrand Facility, Phones & Orders",
@@ -195,15 +287,134 @@ export default function Navbar({ onOpenQuoteModal }: NavbarProps) {
               </div>
             </Link>
 
-            {/* Desktop Navigation Links with Scroll Spy */}
+            {/* Desktop Navigation Links with Scroll Spy & Dropdown */}
             <div className="hidden lg:flex items-center gap-7">
               {navLinks.map((link) => {
-                const isActive = activeSection === link.id;
+                const isProductsLink = link.id === "products";
+                const isActive = isProductsLink
+                  ? pathname.startsWith("/products") || pathname === "/cheese" || (pathname === "/" && activeSection === "products")
+                  : pathname === "/" && activeSection === link.id;
+
+                if (link.isDropdown) {
+                  return (
+                    <div
+                      key={link.name}
+                      className="relative py-2 group"
+                      onMouseEnter={() => setProductsDropdownOpen(true)}
+                      onMouseLeave={() => setProductsDropdownOpen(false)}
+                    >
+                      <button
+                        type="button"
+                        onClick={() => setProductsDropdownOpen((prev) => !prev)}
+                        className={`text-sm font-semibold transition-all relative py-1 flex items-center gap-1.5 ${
+                          isActive
+                            ? "text-jozi-cyan font-bold"
+                            : "text-jozi-navy hover:text-jozi-cyan"
+                        } after:content-[''] after:absolute after:bottom-0 after:left-0 after:h-0.5 after:transition-all after:duration-200 ${
+                          isActive
+                            ? "after:w-full after:bg-jozi-cyan"
+                            : "after:w-0 after:bg-jozi-cyan hover:after:w-full"
+                        }`}
+                      >
+                        <span>{link.name}</span>
+                        <ChevronDown
+                          className={`w-3.5 h-3.5 transition-transform duration-200 ${
+                            productsDropdownOpen ? "rotate-180 text-jozi-cyan" : "text-slate-400 group-hover:text-jozi-cyan"
+                          }`}
+                        />
+                      </button>
+
+                      {/* Dropdown Card */}
+                      <div
+                        className={`absolute top-full left-1/2 -translate-x-1/2 pt-2 w-[590px] transition-all duration-200 z-50 ${
+                          productsDropdownOpen
+                            ? "opacity-100 visible translate-y-0"
+                            : "opacity-0 invisible -translate-y-2 pointer-events-none"
+                        }`}
+                      >
+                        <div className="bg-white rounded-3xl shadow-2xl border border-slate-200/90 p-5 overflow-hidden backdrop-blur-xl">
+                          {/* Top Banner */}
+                          <div className="flex items-center justify-between pb-3 mb-3 border-b border-slate-100">
+                            <div className="text-[11px] font-bold uppercase tracking-wider text-slate-400">
+                              Direct Cold-Chain Dairy Lines
+                            </div>
+                            <Link
+                              href="/#products"
+                              onClick={() => setProductsDropdownOpen(false)}
+                              className="text-xs font-bold text-jozi-cyan hover:text-jozi-navy flex items-center gap-1 transition-colors"
+                            >
+                              <span>View Catalog Overview</span>
+                              <ArrowRight className="w-3 h-3" />
+                            </Link>
+                          </div>
+
+                          {/* 2-Column Product Grid */}
+                          <div className="grid grid-cols-2 gap-2">
+                            {PRODUCT_DROPDOWN_ITEMS.map((item) => {
+                              const SubIcon = item.icon;
+                              const isCurrent = pathname === item.href;
+                              return (
+                                <Link
+                                  key={item.name}
+                                  href={item.href}
+                                  onClick={() => setProductsDropdownOpen(false)}
+                                  className={`p-2.5 rounded-2xl transition-all flex items-start gap-3 group/item ${
+                                    isCurrent
+                                      ? "bg-jozi-cyan/10 border border-jozi-cyan/30 shadow-sm"
+                                      : "hover:bg-slate-50 border border-transparent"
+                                  }`}
+                                >
+                                  <div
+                                    className={`w-9 h-9 rounded-xl ${item.bg} flex items-center justify-center shrink-0 transition-transform group-hover/item:scale-110`}
+                                  >
+                                    <SubIcon className={`w-4 h-4 ${item.color}`} />
+                                  </div>
+                                  <div className="flex-1 min-w-0">
+                                    <div className="flex items-center gap-1.5">
+                                      <span className="text-xs font-bold text-jozi-navy group-hover/item:text-jozi-cyan transition-colors truncate">
+                                        {item.name}
+                                      </span>
+                                      {item.badge && (
+                                        <span className="text-[9px] font-bold px-1.5 py-0.2 rounded-full bg-slate-100 text-slate-600 shrink-0">
+                                          {item.badge}
+                                        </span>
+                                      )}
+                                    </div>
+                                    <p className="text-[11px] text-slate-500 line-clamp-1 mt-0.5">
+                                      {item.desc}
+                                    </p>
+                                  </div>
+                                </Link>
+                              );
+                            })}
+                          </div>
+
+                          {/* Footer Callout */}
+                          <div className="mt-3 pt-3 border-t border-slate-100 flex items-center justify-between bg-slate-50 -mx-5 -mb-5 px-5 py-3 text-xs">
+                            <span className="text-slate-500">Need bulk rate cards or daily standing route deliveries?</span>
+                            <button
+                              type="button"
+                              onClick={() => {
+                                setProductsDropdownOpen(false);
+                                onOpenQuoteModal();
+                              }}
+                              className="font-bold text-jozi-cyan hover:text-jozi-navy transition-colors flex items-center gap-1"
+                            >
+                              <span>Instant Quote</span>
+                              <ChevronRight className="w-3.5 h-3.5" />
+                            </button>
+                          </div>
+                        </div>
+                      </div>
+                    </div>
+                  );
+                }
+
                 return (
-                  <a
+                  <Link
                     key={link.name}
                     href={link.href}
-                    className={`text-sm font-semibold transition-all relative py-1.5 ${
+                    className={`text-sm font-semibold transition-all relative py-1.5 flex items-center gap-1.5 ${
                       isActive
                         ? "text-jozi-cyan font-bold"
                         : "text-jozi-navy hover:text-jozi-cyan"
@@ -213,8 +424,13 @@ export default function Navbar({ onOpenQuoteModal }: NavbarProps) {
                         : "after:w-0 after:bg-jozi-cyan hover:after:w-full"
                     }`}
                   >
-                    {link.name}
-                  </a>
+                    <span>{link.name}</span>
+                    {link.badge && (
+                      <span className="text-[10px] font-bold uppercase tracking-wider px-1.5 py-0.5 rounded-full bg-jozi-amber/15 text-jozi-navy border border-jozi-amber/30">
+                        {link.badge}
+                      </span>
+                    )}
+                  </Link>
                 );
               })}
             </div>
@@ -340,9 +556,94 @@ export default function Navbar({ onOpenQuoteModal }: NavbarProps) {
               <nav className="flex flex-col gap-1.5" aria-label="Mobile Navigation">
                 {navLinks.map((link) => {
                   const Icon = link.icon;
-                  const isActive = activeSection === link.id;
+                  const isProductsLink = link.id === "products";
+                  const isActive = isProductsLink
+                    ? pathname.startsWith("/products") || pathname === "/cheese" || (pathname === "/" && activeSection === "products")
+                    : pathname === "/" && activeSection === link.id;
+
+                  if (link.isDropdown) {
+                    return (
+                      <div key={link.name} className="flex flex-col rounded-2xl border border-slate-100 overflow-hidden">
+                        <div
+                          className={`flex items-center justify-between p-3 transition-all min-h-[52px] ${
+                            isActive
+                              ? "bg-jozi-cyan/10 text-jozi-navy font-bold"
+                              : "text-slate-700 hover:bg-slate-50"
+                          }`}
+                        >
+                          <Link
+                            href={link.href}
+                            onClick={() => setMobileMenuOpen(false)}
+                            className="flex items-center gap-3 flex-1 text-left"
+                          >
+                            <div
+                              className={`w-9 h-9 rounded-xl flex items-center justify-center shrink-0 ${
+                                isActive
+                                  ? "bg-jozi-cyan text-white shadow-sm"
+                                  : "bg-slate-100 text-slate-500"
+                              }`}
+                            >
+                              <Icon className="w-4 h-4" />
+                            </div>
+                            <div className="flex flex-col">
+                              <span className={`text-sm ${isActive ? "font-bold text-jozi-cyan" : "font-semibold"}`}>
+                                {link.name}
+                              </span>
+                              <span className="text-[10px] text-slate-400 font-normal">
+                                Browse all 7 dairy lines
+                              </span>
+                            </div>
+                          </Link>
+
+                          <button
+                            type="button"
+                            onClick={() => setMobileProductsOpen((prev) => !prev)}
+                            className="p-2 rounded-xl text-slate-400 hover:text-jozi-navy hover:bg-slate-200/60 transition-colors ml-2"
+                            aria-label="Toggle products dropdown"
+                          >
+                            <ChevronDown
+                              className={`w-4 h-4 transition-transform duration-200 ${
+                                mobileProductsOpen ? "rotate-180 text-jozi-cyan" : ""
+                              }`}
+                            />
+                          </button>
+                        </div>
+
+                        {/* Collapsible Mobile Sub-items */}
+                        {mobileProductsOpen && (
+                          <div className="bg-slate-50 p-2 flex flex-col gap-1 border-t border-slate-100 animate-in fade-in duration-150">
+                            {PRODUCT_DROPDOWN_ITEMS.map((item) => {
+                              const SubIcon = item.icon;
+                              const isCurrent = pathname === item.href;
+                              return (
+                                <Link
+                                  key={item.name}
+                                  href={item.href}
+                                  onClick={() => setMobileMenuOpen(false)}
+                                  className={`flex items-center justify-between p-2.5 rounded-xl transition-all ${
+                                    isCurrent
+                                      ? "bg-white text-jozi-cyan font-bold shadow-sm border border-jozi-cyan/20"
+                                      : "text-slate-600 hover:bg-white hover:text-jozi-navy"
+                                  }`}
+                                >
+                                  <div className="flex items-center gap-2.5">
+                                    <div className={`w-7 h-7 rounded-lg ${item.bg} flex items-center justify-center shrink-0`}>
+                                      <SubIcon className={`w-3.5 h-3.5 ${item.color}`} />
+                                    </div>
+                                    <span className="text-xs font-semibold">{item.name}</span>
+                                  </div>
+                                  <ChevronRight className="w-3.5 h-3.5 text-slate-300 shrink-0" />
+                                </Link>
+                              );
+                            })}
+                          </div>
+                        )}
+                      </div>
+                    );
+                  }
+
                   return (
-                    <a
+                    <Link
                       key={link.name}
                       href={link.href}
                       onClick={() => setMobileMenuOpen(false)}
@@ -363,9 +664,16 @@ export default function Navbar({ onOpenQuoteModal }: NavbarProps) {
                           <Icon className="w-4 h-4" />
                         </div>
                         <div className="flex flex-col text-left">
-                          <span className={`text-sm ${isActive ? "font-bold text-jozi-cyan" : "font-semibold"}`}>
-                            {link.name}
-                          </span>
+                          <div className="flex items-center gap-2">
+                            <span className={`text-sm ${isActive ? "font-bold text-jozi-cyan" : "font-semibold"}`}>
+                              {link.name}
+                            </span>
+                            {link.badge && (
+                              <span className="text-[9px] font-bold uppercase tracking-wider px-1.5 py-0.2 rounded-full bg-jozi-amber/20 text-jozi-navy">
+                                {link.badge}
+                              </span>
+                            )}
+                          </div>
                           <span className="text-[10px] text-slate-400 font-normal">
                             {link.desc}
                           </span>
@@ -376,7 +684,7 @@ export default function Navbar({ onOpenQuoteModal }: NavbarProps) {
                           isActive ? "text-jozi-cyan" : "text-slate-300"
                         }`}
                       />
-                    </a>
+                    </Link>
                   );
                 })}
               </nav>

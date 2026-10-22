@@ -24,6 +24,11 @@ export default function QuoteModal({ isOpen, onClose, initialProduct }: QuoteMod
   const [email, setEmail] = useState("");
   const [suburb, setSuburb] = useState("Midrand / Surrounds");
   const [submitted, setSubmitted] = useState(false);
+  const [isSubmitting, setIsSubmitting] = useState(false);
+  const [submitError, setSubmitError] = useState("");
+  const [reference, setReference] = useState("");
+  // Hidden from real visitors; only a bot fills this in.
+  const [companyWebsite, setCompanyWebsite] = useState("");
 
   if (!isOpen) return null;
 
@@ -37,8 +42,54 @@ export default function QuoteModal({ isOpen, onClose, initialProduct }: QuoteMod
     }
   };
 
-  const handleFormSubmit = (e: React.FormEvent) => {
+  const handleFormSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
+    setIsSubmitting(true);
+    setSubmitError("");
+
+    // Log the request in the CRM so Ashley has it whether or not the visitor
+    // goes on to send the WhatsApp message.
+    try {
+      const response = await fetch("/api/inquiries", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          source: "WEBSITE_QUOTE",
+          contactName,
+          phone,
+          email,
+          suburb,
+          businessType,
+          productsInterested: selectedProducts,
+          estimatedVolume: volume,
+          deliveryFrequency: frequency,
+          department: COMPANY_INFO.emails.sales,
+          message: `Quote request for ${selectedProducts.join(", ")} — ${volume}, ${frequency}.`,
+          companyWebsite,
+        }),
+      });
+
+      const data = await response.json().catch(() => null);
+
+      if (!response.ok) {
+        setSubmitError(
+          data?.error ??
+            "We could not log that request. Please send it on WhatsApp instead."
+        );
+        setIsSubmitting(false);
+        return;
+      }
+
+      if (data?.reference) setReference(data.reference as string);
+    } catch {
+      setSubmitError(
+        "We could not reach our server. Please send your request on WhatsApp instead."
+      );
+      setIsSubmitting(false);
+      return;
+    }
+
+    setIsSubmitting(false);
     setSubmitted(true);
     try {
       confetti({
@@ -104,6 +155,14 @@ export default function QuoteModal({ isOpen, onClose, initialProduct }: QuoteMod
               Thank you, <strong>{contactName}</strong>. Ashley (Sales) and our Operations team have received your parameters for{" "}
               <strong>{selectedProducts.join(", ")}</strong>.
             </p>
+
+            {reference ? (
+              <p className="text-slate-500 text-xs mb-6">
+                Your reference is{" "}
+                <strong className="font-mono text-slate-700">{reference}</strong>
+                . Quote us this number if you phone or WhatsApp us.
+              </p>
+            ) : null}
 
             <div className="flex flex-col sm:flex-row items-center justify-center gap-3">
               <a
@@ -252,13 +311,37 @@ export default function QuoteModal({ isOpen, onClose, initialProduct }: QuoteMod
               </div>
             </div>
 
+            {/* Honeypot: hidden from people, irresistible to bots. */}
+            <div className="hidden" aria-hidden="true">
+              <label htmlFor="quoteCompanyWebsite">Company website</label>
+              <input
+                id="quoteCompanyWebsite"
+                name="companyWebsite"
+                type="text"
+                tabIndex={-1}
+                autoComplete="off"
+                value={companyWebsite}
+                onChange={(e) => setCompanyWebsite(e.target.value)}
+              />
+            </div>
+
+            {submitError ? (
+              <p
+                role="alert"
+                className="rounded-xl bg-red-50 px-4 py-3 text-sm text-red-700"
+              >
+                {submitError}
+              </p>
+            ) : null}
+
             {/* Submission buttons */}
             <div className="pt-3 flex flex-col sm:flex-row items-center gap-3">
               <button
                 type="submit"
-                className="w-full sm:flex-1 min-h-[48px] py-3.5 px-6 rounded-xl bg-jozi-cyan hover:brightness-105 active:scale-[0.98] text-white font-semibold text-sm md:text-base shadow-glow focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-[#00A8E8] transition-all duration-200 inline-flex items-center justify-center"
+                disabled={isSubmitting}
+                className="w-full sm:flex-1 min-h-[48px] py-3.5 px-6 rounded-xl bg-jozi-cyan hover:brightness-105 active:scale-[0.98] text-white font-semibold text-sm md:text-base shadow-glow focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-[#00A8E8] transition-all duration-200 inline-flex items-center justify-center disabled:opacity-50 disabled:cursor-not-allowed"
               >
-                Submit Quote Request to Sales
+                {isSubmitting ? "Submitting..." : "Submit Quote Request to Sales"}
               </button>
 
               <a
