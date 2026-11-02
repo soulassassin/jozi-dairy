@@ -1,4 +1,4 @@
-import { MailMessage, sendMail } from "./mailer";
+import { MailMessage, MailTransport, sendMail } from "./mailer";
 import { leadPath } from "./returnPath";
 import { addActivity } from "./service";
 import { Lead, SOURCE_LABELS } from "./types";
@@ -195,44 +195,86 @@ export function buildLeadEmail(lead: Lead, isRepeat: boolean): MailMessage {
   };
 }
 
+export interface NotifyResult {
+  /** True only when a real transport accepted the message. */
+  delivered: boolean;
+  transport: MailTransport | null;
+  error?: string;
+}
+
+export interface NotifyOptions {
+  /**
+   * Record the notification on the lead's timeline. Off when there is no
+   * durable store to record it in.
+   */
+  logActivity?: boolean;
+}
+
 /**
- * Sends the alert. Never throws: a mail outage must not cost the team the
- * lead, which is already safely captured by the time this runs.
+ * Sends the alert and reports what happened. Never throws: a mail outage must
+ * not cost the team a lead that is already captured.
+ *
+ * `delivered` is false for the console transport — it prints the email and
+ * sends nothing, which matters when the email is the only copy of the lead.
  */
 export async function notifyNewLead(
   lead: Lead,
-  isRepeat: boolean
-): Promise<void> {
-  if (process.env.CRM_NOTIFY_ENABLED === "false") return;
+  isRepeat: boolean,
+  options: NotifyOptions = {}
+): Promise<NotifyResult> {
+  if (process.env.CRM_NOTIFY_ENABLED === "false") {
+    return {
+      delivered: false,
+      transport: null,
+      error: "Notifications are switched off (CRM_NOTIFY_ENABLED=false).",
+    };
+  }
 
   try {
     const message = buildLeadEmail(lead, isRepeat);
     const transport = await sendMail(message);
+    const delivered = transport !== "console";
+
     console.info(
       `[crm:mail] Notified ${message.to.join(", ")} about ${lead.reference} via ${transport}.`
     );
 
-    try {
-      await addActivity(
-        lead.id,
-        {
-          type: transport === "console" ? "NOTE" : "EMAIL",
-          body: `Notification ${
-            transport === "console"
-              ? "logged for team delivery"
-              : `sent via ${transport}`
-          } to ${message.to.join(", ")}`,
-        },
-        "System"
-      );
-    } catch {
-      // Activity log is best-effort
+    if (options.logActivity !== false) {
+      try {
+        await addActivity(
+          lead.id,
+          {
+            type: delivered ? "EMAIL" : "NOTE",
+            body: `Notification ${
+              delivered
+                ? `sent via ${transport}`
+                : "logged for team delivery"
+            } to ${message.to.join(", ")}`,
+          },
+          "System"
+        );
+      } catch {
+        // Activity log is best-effort
+      }
     }
+
+    return {
+      delivered,
+      transport,
+      error: delivered
+        ? undefined
+        : "No mail transport is configured, so the email was only logged.",
+    };
   } catch (error) {
     // Logged, not rethrown. The lead is in the CRM either way.
     console.error(
       `[crm:mail] Could not send the alert for ${lead.reference}. The lead is saved; someone must check the dashboard.`,
       error
     );
+    return {
+      delivered: false,
+      transport: null,
+      error: error instanceof Error ? error.message : "Unknown mail failure.",
+    };
   }
 }

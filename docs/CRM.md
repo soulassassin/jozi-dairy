@@ -146,11 +146,20 @@ serverless function gets a throwaway one, so a lead written there is gone when
 the function freezes. The write succeeds and the visitor gets a reference
 number, which makes it the worst kind of failure — a silent one.
 
-So **lead capture refuses to run when the store is not durable.** On a
-serverless host `/api/inquiries` returns 503 and the form tells the visitor to
-phone or WhatsApp instead. Nothing is written and nothing is lost quietly.
-`CRM_ALLOW_EPHEMERAL_STORE=true` overrides this, and is only sensible for a
-throwaway preview.
+So when the store is not durable, **capture falls back to email**: the enquiry
+is validated, emailed to the team, and reported as received. Nothing is written
+to disk. The reference is marked `JD-E-…` rather than `JD-L-…`, because there
+is no stored lead to look it up under — the email is the only copy.
+
+Success is reported **only if the email actually went out**. The console
+transport prints the message and sends nothing, so it counts as a failure:
+`/api/inquiries` returns 503 and the form tells the visitor to phone or
+WhatsApp. That means a serverless deployment needs a real transport
+(`RESEND_API_KEY`) before its forms will work at all — which is deliberate. The
+alternative is accepting enquiries nobody will ever read.
+
+`CRM_ALLOW_EPHEMERAL_STORE=true` skips the whole check and stores to the
+throwaway disk anyway; only sensible for a preview where losing leads is fine.
 
 To run the site on a CDN platform and the CRM on a Node host, set two
 variables:

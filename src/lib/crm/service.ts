@@ -154,10 +154,18 @@ export class ValidationError extends Error {}
  * Creates a lead, or appends the enquiry to the person's existing open lead.
  * `author` records who captured it ("Website" for public submissions).
  */
-export async function createLead(
-  input: LeadInput,
-  author = "Website"
-): Promise<CreateLeadResult> {
+interface ValidatedCore {
+  contactName: string;
+  email: string;
+  phone: string;
+  message: string;
+  source: LeadSource;
+  /** "website quote" — for timeline prose. */
+  sourceWords: string;
+}
+
+/** The checks every enquiry must pass, whether or not it can be stored. */
+function validateLeadCore(input: LeadInput): ValidatedCore {
   const contactName = text(input.contactName, 120);
   const email = text(input.email, 160);
   const phone = text(input.phone, 40);
@@ -176,7 +184,100 @@ export async function createLead(
 
   const message = text(input.message, 4000);
   const source = oneOf<LeadSource>(input.source, LEAD_SOURCES, "PHONE_CALL");
-  const sourceWords = source.replace(/_/g, " ").toLowerCase();
+
+  return {
+    contactName,
+    email,
+    phone,
+    message,
+    source,
+    sourceWords: source.replace(/_/g, " ").toLowerCase(),
+  };
+}
+
+/** Builds the stored shape of a lead. Pure — it touches no storage. */
+function composeLead(
+  input: LeadInput,
+  core: ValidatedCore,
+  reference: string,
+  author: string
+): Lead {
+  const id = randomUUID();
+  const timestamp = nowIso();
+
+  const lead: Lead = {
+    id,
+    reference,
+    contactName: core.contactName,
+    company: text(input.company, 160),
+    email: core.email,
+    phone: core.phone,
+    whatsapp: text(input.whatsapp, 40),
+    suburb: text(input.suburb, 120),
+    source: core.source,
+    status: oneOf<LeadStatus>(input.status, LEAD_STATUSES, "NEW"),
+    priority: oneOf<LeadPriority>(
+      input.priority,
+      ["LOW", "MEDIUM", "HIGH"],
+      "MEDIUM"
+    ),
+    businessType: text(input.businessType, 120),
+    productsInterested: stringList(input.productsInterested),
+    estimatedVolume: text(input.estimatedVolume, 120),
+    deliveryFrequency: text(input.deliveryFrequency, 120),
+    estimatedMonthlyValue: money(input.estimatedMonthlyValue),
+    message: core.message,
+    department: text(input.department, 160),
+    owner: text(input.owner, 80) || "Unassigned",
+    nextFollowUpAt: isoDate(input.nextFollowUpAt),
+    lostReason: null,
+    createdAt: timestamp,
+    updatedAt: timestamp,
+    activities: [],
+  };
+
+  lead.activities.push(
+    buildActivity(
+      id,
+      core.source === "PHONE_CALL" ? "CALL_INBOUND" : "NOTE",
+      core.message || `Lead captured via ${core.sourceWords}.`,
+      author
+    )
+  );
+
+  return lead;
+}
+
+/**
+ * A reference for an enquiry that was emailed but never stored. Marked JD-E-
+ * rather than JD-L- because there is no stored lead to look it up under.
+ */
+function transientReference(): string {
+  const day = new Date().toISOString().slice(0, 10).replace(/-/g, "");
+  return `JD-E-${day}-${randomUUID().slice(0, 4).toUpperCase()}`;
+}
+
+/**
+ * Validates an enquiry and builds it in memory, touching no storage.
+ *
+ * For deployments with no durable store: the enquiry cannot be persisted, but
+ * it can still be emailed to the team, so it is not lost. Throws
+ * ValidationError on bad input exactly as createLead does.
+ */
+export function buildTransientLead(
+  input: LeadInput,
+  author = "Website"
+): Lead {
+  const core = validateLeadCore(input);
+  return composeLead(input, core, transientReference(), author);
+}
+
+export async function createLead(
+  input: LeadInput,
+  author = "Website"
+): Promise<CreateLeadResult> {
+  const core = validateLeadCore(input);
+  const { email, phone, message, source, sourceWords } = core;
 
   return mutate<CreateLeadResult>((db) => {
     const existing = findOpenDuplicate(db.leads, email, phone);
@@ -213,47 +314,11 @@ export async function createLead(
     }
 
     db.leadSequence += 1;
-    const id = randomUUID();
-    const timestamp = nowIso();
-
-    const lead: Lead = {
-      id,
-      reference: nextReference(db.leadSequence),
-      contactName,
-      company: text(input.company, 160),
-      email,
-      phone,
-      whatsapp: text(input.whatsapp, 40),
-      suburb: text(input.suburb, 120),
-      source,
-      status: oneOf<LeadStatus>(input.status, LEAD_STATUSES, "NEW"),
-      priority: oneOf<LeadPriority>(
-        input.priority,
-        ["LOW", "MEDIUM", "HIGH"],
-        "MEDIUM"
-      ),
-      businessType: text(input.businessType, 120),
-      productsInterested: stringList(input.productsInterested),
-      estimatedVolume: text(input.estimatedVolume, 120),
-      deliveryFrequency: text(input.deliveryFrequency, 120),
-      estimatedMonthlyValue: money(input.estimatedMonthlyValue),
-      message,
-      department: text(input.department, 160),
-      owner: text(input.owner, 80) || "Unassigned",
-      nextFollowUpAt: isoDate(input.nextFollowUpAt),
-      lostReason: null,
-      createdAt: timestamp,
-      updatedAt: timestamp,
-      activities: [],
-    };
-
-    lead.activities.push(
-      buildActivity(
-        id,
-        source === "PHONE_CALL" ? "CALL_INBOUND" : "NOTE",
-        message || `Lead captured via ${sourceWords}.`,
-        author
-      )
+    const lead = composeLead(
+      input,
+      core,
+      nextReference(db.leadSequence),
+      author
     );
 
     db.leads.push(lead);

@@ -1,7 +1,11 @@
 import { after } from "next/server";
 import { readJsonBody } from "@/lib/crm/apiGuard";
 import { notifyNewLead } from "@/lib/crm/notify";
-import { createLead, ValidationError } from "@/lib/crm/service";
+import {
+  buildTransientLead,
+  createLead,
+  ValidationError,
+} from "@/lib/crm/service";
 import { isStoreDurable } from "@/lib/crm/store";
 import { LeadSource } from "@/lib/crm/types";
 
@@ -93,23 +97,6 @@ function resolveSource(value: unknown): LeadSource {
 export async function POST(request: Request) {
   const cors = corsHeaders(request);
 
-  // Refuse rather than accept an enquiry this deployment cannot keep. On a
-  // serverless host the write would succeed, the visitor would get a
-  // reference number, and the lead would vanish with the function. Better a
-  // visible failure that sends them to WhatsApp than a silent loss.
-  if (!isStoreDurable()) {
-    console.error(
-      "[inquiries] Refused a lead: this deployment has no durable store. Point the public form at the CRM host with NEXT_PUBLIC_INQUIRY_ENDPOINT, or move the CRM to a host with a persistent filesystem."
-    );
-    return Response.json(
-      {
-        error:
-          "Our enquiry system is being moved. Please phone or WhatsApp us and we will help you right away.",
-      },
-      { status: 503, headers: cors }
-    );
-  }
-
   if (isRateLimited(clientKey(request))) {
     return Response.json(
       { error: "Too many submissions just now. Please try again in a minute." },
@@ -125,11 +112,41 @@ export async function POST(request: Request) {
     return Response.json({ ok: true }, { status: 202, headers: cors });
   }
 
+  const input = { ...body, source: resolveSource(body.source) };
+
   try {
-    const { lead, merged } = await createLead(
-      { ...body, source: resolveSource(body.source) },
-      "Website"
-    );
+    // No durable store (a serverless host): the enquiry cannot be saved, but
+    // it can still reach the team by email, so it is not lost. Success is
+    // reported only if the email actually went out — a console-only transport
+    // delivers nothing, and claiming otherwise would lose the lead silently.
+    if (!isStoreDurable()) {
+      const lead = buildTransientLead(input, "Website");
+      const result = await notifyNewLead(lead, false, { logActivity: false });
+
+      if (!result.delivered) {
+        console.error(
+          `[inquiries] Lead ${lead.reference} could not be stored or emailed (${result.error ?? "no transport"}). This deployment has no durable store and no working mail transport: set RESEND_API_KEY, or point the form at the CRM host with NEXT_PUBLIC_INQUIRY_ENDPOINT.`
+        );
+        return Response.json(
+          {
+            error:
+              "We could not record that enquiry. Please phone or WhatsApp us and we will help you right away.",
+          },
+          { status: 503, headers: cors }
+        );
+      }
+
+      console.warn(
+        `[inquiries] Lead ${lead.reference} was emailed to the team but not stored — this deployment has no durable store.`
+      );
+
+      return Response.json(
+        { ok: true, reference: lead.reference, merged: false, emailOnly: true },
+        { status: 201, headers: cors }
+      );
+    }
+
+    const { lead, merged } = await createLead(input, "Website");
 
     // Email the team after the response is sent, so the visitor never waits on
     // SMTP and a mail outage cannot fail a capture that already succeeded.
