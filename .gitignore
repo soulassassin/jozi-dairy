@@ -37,3 +37,7 @@ next-env.d.ts
 
 # CRM lead data (business records — never commit)
 /data
+
+# Agent orchestration scratch (briefings, handoffs, progress notes).
+# Working state, not project source — and it has held plaintext credentials.
+/.agents

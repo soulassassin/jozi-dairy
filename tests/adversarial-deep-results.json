@@ -1,0 +1,22 @@
+{
+  "rawLtEscaping": {
+    "passed": true,
+    "issues": []
+  },
+  "breadcrumbTerminalCanonicalMatch": {
+    "passed": true,
+    "issues": []
+  },
+  "crossProductFaqIsolation": {
+    "passed": true,
+    "issues": []
+  },
+  "offersValidity": {
+    "passed": true,
+    "issues": []
+  },
+  "cheeseVarietyParity": {
+    "passed": true,
+    "issues": []
+  }
+}

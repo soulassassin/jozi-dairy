@@ -1,7 +1,11 @@
 import type { Metadata } from "next";
+import {
+  generateCheeseCatalogSchema,
+  generateBreadcrumbSchema,
+} from "@/lib/seo/schema";
 
 export const metadata: Metadata = {
-  title: "Wholesale & Bulk Cheese Selection | Jozi Dairy Midrand, Johannesburg",
+  title: "Wholesale & Bulk Cheese Selection • Midrand, Johannesburg",
   description:
     "Explore Jozi Dairy's premium South African cheese selection: Mature Yellow Cheddar, Creamy Sweetmilk Gouda wheels, high-heat stretch Mozzarella, and traditional Greek Feta in brine. Daily cold-chain delivery across Gauteng.",
   keywords: [
@@ -15,13 +19,13 @@ export const metadata: Metadata = {
     "Jozi Dairy cheese",
   ],
   alternates: {
-    canonical: "https://www.jozidairy.co.za/cheese",
+    canonical: "/cheese",
   },
   openGraph: {
     title: "Wholesale & Artisanal Cheese Selection | Jozi Dairy",
     description:
       "Farm-fresh South African Cheddar, Sweetmilk Gouda, Culinary Mozzarella and Traditional Greek Feta. Cold-chain delivery guaranteed from Midrand.",
-    url: "https://www.jozidairy.co.za/cheese",
+    url: "/cheese",
     siteName: "Jozi Dairy",
     images: [
       {
@@ -34,6 +38,13 @@ export const metadata: Metadata = {
     locale: "en_ZA",
     type: "website",
   },
+  twitter: {
+    card: "summary_large_image",
+    title: "Wholesale & Artisanal Cheese Selection | Jozi Dairy",
+    description:
+      "Farm-fresh South African Cheddar, Sweetmilk Gouda, Culinary Mozzarella and Traditional Greek Feta. Cold-chain delivery guaranteed from Midrand.",
+    images: ["/assets/cheese-hero-banner.jpg"],
+  },
 };
 
 export default function CheeseLayout({
@@ -41,5 +52,27 @@ export default function CheeseLayout({
 }: {
   children: React.ReactNode;
 }) {
-  return <>{children}</>;
+  const cheeseCatalogSchema = generateCheeseCatalogSchema();
+  const breadcrumbSchema = generateBreadcrumbSchema([
+    { name: "Home", url: "/" },
+    { name: "Cheese Selection", url: "/cheese" },
+  ]);
+
+  return (
+    <>
+      <script
+        type="application/ld+json"
+        dangerouslySetInnerHTML={{
+          __html: JSON.stringify(cheeseCatalogSchema).replace(/</g, "\\u003c"),
+        }}
+      />
+      <script
+        type="application/ld+json"
+        dangerouslySetInnerHTML={{
+          __html: JSON.stringify(breadcrumbSchema).replace(/</g, "\\u003c"),
+        }}
+      />
+      {children}
+    </>
+  );
 }

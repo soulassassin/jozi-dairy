@@ -1,4 +1,6 @@
+import { after } from "next/server";
 import { readJsonBody } from "@/lib/crm/apiGuard";
+import { notifyNewLead } from "@/lib/crm/notify";
 import { createLead, ValidationError } from "@/lib/crm/service";
 import { LeadSource } from "@/lib/crm/types";
 
@@ -69,6 +71,10 @@ export async function POST(request: Request) {
       { ...body, source: resolveSource(body.source) },
       "Website"
     );
+
+    // Email the team after the response is sent, so the visitor never waits on
+    // SMTP and a mail outage cannot fail a capture that already succeeded.
+    after(() => notifyNewLead(lead, merged));
 
     // Deliberately minimal response: the public form has no business knowing
     // the pipeline status or internal notes of an existing lead.

@@ -10,6 +10,7 @@ import DepartmentDirectory from "@/components/DepartmentDirectory";
 import Footer from "@/components/Footer";
 import FloatingWhatsApp from "@/components/FloatingWhatsApp";
 import QuoteModal from "@/components/QuoteModal";
+import { generateHomeFAQSchema } from "@/lib/seo/schema";
 
 export default function HomePage() {
   const [quoteModalOpen, setQuoteModalOpen] = useState(false);
@@ -29,6 +30,14 @@ export default function HomePage() {
 
   return (
     <main className="min-h-screen flex flex-col bg-white">
+      {/* Schema.org General FAQPage Structured Data */}
+      <script
+        type="application/ld+json"
+        dangerouslySetInnerHTML={{
+          __html: JSON.stringify(generateHomeFAQSchema()).replace(/</g, "\\u003c"),
+        }}
+      />
+
       {/* Top Utility & Sticky Navigation */}
       <Navbar onOpenQuoteModal={() => handleOpenQuoteModal()} />
 

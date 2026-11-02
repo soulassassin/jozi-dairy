@@ -4,7 +4,15 @@ import React, { useState } from "react";
 import { useRouter } from "next/navigation";
 import { Lock, LoaderCircle, Milk } from "lucide-react";
 
-export default function CrmLogin() {
+interface CrmLoginProps {
+  /**
+   * Where to go once signed in — already sanitised by the login page. Lets a
+   * click from a lead notification email survive an expired session.
+   */
+  next: string;
+}
+
+export default function CrmLogin({ next }: CrmLoginProps) {
   const router = useRouter();
   const [staffName, setStaffName] = useState("");
   const [passcode, setPasscode] = useState("");
@@ -32,7 +40,7 @@ export default function CrmLogin() {
       }
 
       // Refresh so the server component picks up the new session cookie.
-      router.replace("/crm");
+      router.replace(next);
       router.refresh();
     } catch {
       setError("Network error. Check that the dev server is still running.");

@@ -12,6 +12,8 @@ import {
   LeadSource,
   LeadStatus,
   OPEN_STATUSES,
+  PRIORITY_LABELS,
+  SOURCE_LABELS,
   STATUS_LABELS,
 } from "./types";
 
@@ -629,9 +631,9 @@ export async function exportLeadsCsv(): Promise<string> {
       lead.email,
       lead.phone,
       lead.suburb,
-      lead.source,
-      lead.status,
-      lead.priority,
+      SOURCE_LABELS[lead.source],
+      STATUS_LABELS[lead.status],
+      PRIORITY_LABELS[lead.priority],
       lead.businessType,
       lead.productsInterested.join("; "),
       lead.estimatedVolume,

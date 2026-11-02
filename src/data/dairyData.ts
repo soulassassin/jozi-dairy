@@ -13,6 +13,37 @@ export interface ProductItem {
   tagColor?: "cyan" | "amber" | "green" | "navy";
 }
 
+export const NOTIFICATION_EMAILS = [
+  "ashley@jozidairy.co.za",
+  "sherazaad@synapsesnetworking.com",
+  "operations@jozidairy.co.za",
+] as const;
+
+/**
+ * Builds a universal mailto URI targeting all three business mailboxes:
+ * Ashley (Sales), Sherazaad (Agency / IT), and Operations.
+ */
+export function buildInquiryMailto(
+  subject: string = "Jozi Dairy Wholesale & Supply Inquiry",
+  body?: string,
+  primaryTo: string = "ashley@jozidairy.co.za"
+): string {
+  const ccRecipients = NOTIFICATION_EMAILS.filter(
+    (addr) => addr.toLowerCase() !== primaryTo.toLowerCase()
+  );
+
+  const params = new URLSearchParams();
+  if (ccRecipients.length > 0) {
+    params.set("cc", ccRecipients.join(","));
+  }
+  params.set("subject", subject);
+  if (body) {
+    params.set("body", body);
+  }
+
+  return `mailto:${primaryTo}?${params.toString().replace(/\+/g, "%20")}`;
+}
+
 export const COMPANY_INFO = {
   name: "Jozi Dairy",
   legalName: "Jozi Dairy Distribution",
@@ -28,12 +59,23 @@ export const COMPANY_INFO = {
     whatsappLink: "https://wa.me/27652342460?text=Hello%20Jozi%20Dairy%2C%20I%20would%20like%20to%20inquire%20about%20your%20products.",
   },
   emails: {
+    primary: "ashley@jozidairy.co.za",
+    recipients: [
+      "ashley@jozidairy.co.za",
+      "sherazaad@synapsesnetworking.com",
+      "operations@jozidairy.co.za",
+    ],
     operations: "operations@jozidairy.co.za",
-    operationsLink: "mailto:operations@jozidairy.co.za?subject=Order%20Inquiry",
+    operationsLink:
+      "mailto:operations@jozidairy.co.za?cc=ashley@jozidairy.co.za,sherazaad@synapsesnetworking.com&subject=Jozi%20Dairy%20-%20Order%20%26%20Operations%20Inquiry",
     accounts: "accounts@jozidairy.co.za",
-    accountsLink: "mailto:accounts@jozidairy.co.za?subject=Accounts%20Query",
+    accountsLink:
+      "mailto:accounts@jozidairy.co.za?cc=ashley@jozidairy.co.za,sherazaad@synapsesnetworking.com,operations@jozidairy.co.za&subject=Jozi%20Dairy%20-%20Accounts%20Query",
     sales: "ashley@jozidairy.co.za",
-    salesLink: "mailto:ashley@jozidairy.co.za?subject=Wholesale%20Quote%20Request",
+    salesLink:
+      "mailto:ashley@jozidairy.co.za?cc=sherazaad@synapsesnetworking.com,operations@jozidairy.co.za&subject=Jozi%20Dairy%20-%20Wholesale%20Quote%20Request",
+    generalLink:
+      "mailto:ashley@jozidairy.co.za?cc=sherazaad@synapsesnetworking.com,operations@jozidairy.co.za&subject=Jozi%20Dairy%20-%20General%20Inquiry",
   },
   social: {
     facebook: "https://fb.me/jozidairy",

@@ -1,0 +1,83 @@
+{
+  "homepage": {
+    "totalSchemasFound": 3,
+    "faqCount": 5,
+    "questions": [
+      "What regions in Gauteng does Jozi Dairy deliver to?",
+      "How do I open a wholesale dairy trade account with Jozi Dairy?",
+      "Where does Jozi Dairy source its milk?",
+      "What is the shelf life and storage requirement for your fresh milk?",
+      "Can I place urgent milk top-up orders outside of scheduled days?"
+    ]
+  },
+  "cheese": {
+    "totalSchemasFound": 4
+  },
+  "products": {
+    "fresh-milk": {
+      "hasProduct": true,
+      "offerCount": 4,
+      "hasBreadcrumbs": true,
+      "faqPageCount": 1,
+      "faqQuestions": [
+        "Where does your fresh milk originate?",
+        "What is the minimum commercial order volume?",
+        "Can we set up recurring standing delivery days?"
+      ]
+    },
+    "yoghurt": {
+      "hasProduct": true,
+      "offerCount": 5,
+      "hasBreadcrumbs": true,
+      "faqPageCount": 1,
+      "faqQuestions": [
+        "Can we order assorted flavour packs for retail stores?",
+        "What flavours are available in the 5kg catering buckets?"
+      ]
+    },
+    "fresh-cream": {
+      "hasProduct": true,
+      "offerCount": 2,
+      "hasBreadcrumbs": true,
+      "faqPageCount": 1,
+      "faqQuestions": [
+        "Does this cream whip easily by hand and machine?",
+        "Is your fresh cream suitable for hot sauce cooking?"
+      ]
+    },
+    "amasi": {
+      "hasProduct": true,
+      "offerCount": 3,
+      "hasBreadcrumbs": true,
+      "faqPageCount": 1,
+      "faqQuestions": [
+        "Is Jozi Dairy Amasi thick or watery?",
+        "Can we order large crates for upcoming events and functions?"
+      ]
+    },
+    "dairy-blend": {
+      "hasProduct": true,
+      "offerCount": 3,
+      "hasBreadcrumbs": true,
+      "faqPageCount": 1,
+      "faqQuestions": [
+        "How does Dairy Blend compare to Fresh Milk?",
+        "What is the lead time for 5L catering containers?"
+      ]
+    },
+    "juice": {
+      "hasProduct": true,
+      "offerCount": 2,
+      "hasBreadcrumbs": true,
+      "faqPageCount": 1,
+      "faqQuestions": [
+        "Are there added preservatives or colourings?",
+        "Can we mix and match flavours in a single order?"
+      ]
+    }
+  },
+  "crm": {},
+  "invoices": {},
+  "passed": true,
+  "failures": []
+}

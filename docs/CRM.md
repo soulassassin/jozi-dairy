@@ -31,7 +31,8 @@ hours. Changing `CRM_SESSION_SECRET` signs everyone out.
 | Email / WhatsApp / Walk-in / Referral | Captured by hand, tagged with the matching source. |
 
 The visitor's enquiry text becomes the first entry on the lead's timeline, so
-nothing is paraphrased away.
+nothing is paraphrased away. Website leads also email the team — see
+[Email notifications](#email-notifications).
 
 ## Working a lead
 
@@ -81,10 +82,61 @@ new business.
 Phone numbers are compared digits-only, so `065 234 2460`, `0652342460` and
 `+27 65 234 2460` are recognised as the same person.
 
+## Email notifications
+
+When a lead arrives from the website, the team is emailed automatically. Staff
+leads captured by hand in the CRM do **not** trigger an email — you already know
+about those.
+
+**Who gets it.** By default every website lead goes to all three mailboxes in
+`DEFAULT_NOTIFICATION_RECIPIENTS` (`src/lib/crm/notify.ts`): Sales (ashley@),
+Operations, and agency oversight. `CRM_NOTIFY_TO` replaces that list,
+`CRM_NOTIFY_CC` adds copies.
+
+**What it contains.** The enquiry details the visitor filled in, their message
+verbatim, a one-tap `tel:` link, and a button that opens the lead in the CRM.
+Contact-form leads also show **Routed to** — the department mailbox the visitor
+picked. **Reply-To is set to the customer**, so hitting reply answers them
+directly rather than the robot. A repeat enquiry is subject-lined
+`Repeat enquiry` and flagged in the body.
+
+**The "Open this lead" button** goes to `/crm?lead=<id>`, which opens that
+lead's drawer straight away. Sessions only last 12 hours, so that click often
+lands on the login page first — the lead is carried through sign-in and the
+drawer opens once you are in, rather than dropping you on the dashboard to hunt
+for the enquiry you were just emailed about. Only paths inside `/crm` survive
+that round trip, so the link cannot be rewritten to bounce someone off-site
+(`src/lib/crm/returnPath.ts`).
+
+**Transports.** Set one; the CRM picks it up automatically.
+
+| Transport | When | Variables |
+| --- | --- | --- |
+| **SMTP** | Normal VPS or shared host — sends through Jozi Dairy's own mailbox | `CRM_SMTP_HOST`/`SMTP_HOST`, `..._PORT`, `..._USER`, `CRM_SMTP_PASSWORD`/`SMTP_PASS`, `..._SECURE` |
+| **Resend** | Hosts that block outbound SMTP (Vercel and similar) — plain HTTPS | `RESEND_API_KEY` |
+| **Console** | Default when neither is set: logs the email instead of sending | — |
+
+Also: `CRM_MAIL_FROM` (the From address — must be one the transport may send
+as), `CRM_BASE_URL` (used for the link in the email — set this to the live
+domain), `CRM_MAIL_TRANSPORT` to force a transport, and
+`CRM_NOTIFY_ENABLED=false` to switch notifications off without deleting the
+settings.
+
+Console mode means a fresh checkout captures leads and shows you the exact email
+in the server log without any mail credentials.
+
+**Delivery is best-effort, capture is not.** The email is sent *after* the
+response via Next's `after()`, so the visitor never waits on SMTP, and a mail
+failure is logged but never fails the submission — the lead is already saved.
+If the log shows `[crm:mail] Could not send the alert`, the lead is safe in the
+dashboard; only the notification was lost.
+
 ## Export
 
 **Export CSV** downloads every lead with its contact details, pipeline state,
-owner, follow-up date and estimated value. It opens cleanly in Excel.
+owner, follow-up date and estimated value. Source, status and priority are
+written in the same words the dashboard uses, not the internal codes. It opens
+cleanly in Excel — the file carries a byte-order mark so accented names survive.
 
 ## Where the data lives
 

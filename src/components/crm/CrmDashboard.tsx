@@ -33,6 +33,8 @@ interface CrmDashboardProps {
   initialLeads: Lead[];
   initialContacts: Contact[];
   initialStats: CrmStats;
+  /** Lead to open on arrival, from the ?lead= link in a notification email. */
+  initialLeadId?: string | null;
 }
 
 type Tab = "pipeline" | "contacts";
@@ -42,6 +44,7 @@ export default function CrmDashboard({
   initialLeads,
   initialContacts,
   initialStats,
+  initialLeadId = null,
 }: CrmDashboardProps) {
   const router = useRouter();
 
@@ -57,7 +60,11 @@ export default function CrmDashboard({
   const [searchInput, setSearchInput] = useState("");
   const [search, setSearch] = useState("");
 
-  const [selectedId, setSelectedId] = useState<string | null>(null);
+  const [selectedId, setSelectedId] = useState<string | null>(initialLeadId);
+  // A lead opened by id that the visible list does not contain — a deep link
+  // from a notification email, or a lead the active filters exclude. Fetched
+  // on its own so the drawer still opens.
+  const [offListLead, setOffListLead] = useState<Lead | null>(null);
   const [showNewLead, setShowNewLead] = useState(false);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState("");
@@ -111,10 +118,48 @@ export default function CrmDashboard({
     void refresh();
   }, [refresh]);
 
-  const selectedLead = useMemo(
-    () => leads.find((lead) => lead.id === selectedId) ?? null,
-    [leads, selectedId]
-  );
+  const selectedLead = useMemo(() => {
+    if (!selectedId) return null;
+    return (
+      leads.find((lead) => lead.id === selectedId) ??
+      (offListLead?.id === selectedId ? offListLead : null)
+    );
+  }, [leads, selectedId, offListLead]);
+
+  // Drop the ?lead= parameter once it has been consumed, so closing the drawer
+  // and reloading does not reopen it. History API keeps the dashboard mounted.
+  useEffect(() => {
+    if (initialLeadId) window.history.replaceState(null, "", "/crm");
+  }, [initialLeadId]);
+
+  // Fetch a selected lead that is not in the current list.
+  useEffect(() => {
+    if (!selectedId) return;
+    if (leads.some((lead) => lead.id === selectedId)) return;
+    if (offListLead?.id === selectedId) return;
+    // Wait for the in-flight list request rather than racing it.
+    if (loading) return;
+
+    let cancelled = false;
+    void (async () => {
+      try {
+        const data = await apiFetch<{ lead: Lead }>(
+          `/api/crm/leads/${encodeURIComponent(selectedId)}`
+        );
+        if (!cancelled) setOffListLead(data.lead);
+      } catch (caught) {
+        if (cancelled) return;
+        setSelectedId(null);
+        setError(
+          caught instanceof Error ? caught.message : "Could not open that lead."
+        );
+      }
+    })();
+
+    return () => {
+      cancelled = true;
+    };
+  }, [selectedId, leads, offListLead, loading]);
 
   const flash = (text: string) => {
     setToast(text);
@@ -126,11 +171,17 @@ export default function CrmDashboard({
     setLeads((current) =>
       current.map((lead) => (lead.id === updated.id ? updated : lead))
     );
+    setOffListLead((current) =>
+      current && current.id === updated.id ? updated : current
+    );
     void refresh();
   };
 
   const handleDeleted = (leadId: string) => {
     setLeads((current) => current.filter((lead) => lead.id !== leadId));
+    setOffListLead((current) =>
+      current && current.id === leadId ? null : current
+    );
     setSelectedId(null);
     flash("Lead deleted.");
     void refresh();

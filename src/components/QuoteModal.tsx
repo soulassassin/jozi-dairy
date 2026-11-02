@@ -4,7 +4,7 @@ import React, { useState } from "react";
 import confetti from "canvas-confetti";
 import { X, Check, Calculator, Mail, Sparkles, Building2, Package } from "lucide-react";
 import { WhatsAppIcon } from "@/components/icons/SocialIcons";
-import { COMPANY_INFO, PRODUCTS } from "@/data/dairyData";
+import { COMPANY_INFO, PRODUCTS, buildInquiryMailto } from "@/data/dairyData";
 
 interface QuoteModalProps {
   isOpen: boolean;
@@ -116,6 +116,26 @@ export default function QuoteModal({ isOpen, onClose, initialProduct }: QuoteMod
     return `https://wa.me/27652342460?text=${encodeURIComponent(text)}`;
   };
 
+  const generateEmailQuoteLink = () => {
+    const subject = `Wholesale Dairy Quote Request - ${contactName || "New Inquirer"} [${reference || "Web"}]`;
+    const body =
+      `Hi Jozi Dairy Team,\n\n` +
+      `I have submitted a quotation request with the following parameters:\n\n` +
+      `• Contact Name / Business: ${contactName}\n` +
+      `• Phone / WhatsApp: ${phone}\n` +
+      `• Email: ${email}\n` +
+      `• Business Type: ${businessType}\n` +
+      `• Delivery Suburb: ${suburb}\n` +
+      `• Products Required: ${selectedProducts.join(", ")}\n` +
+      `• Estimated Volume: ${volume}\n` +
+      `• Delivery Cadence: ${frequency}\n\n` +
+      (reference ? `Reference: ${reference}\n\n` : "") +
+      `Please provide formal quotation and delivery terms.\n\n` +
+      `Kind regards,\n${contactName}`;
+
+    return buildInquiryMailto(subject, body, "ashley@jozidairy.co.za");
+  };
+
   return (
     <div className="fixed inset-0 z-50 bg-jozi-navy/75 backdrop-blur-md flex items-center justify-center p-4 overflow-y-auto">
       <div className="bg-white rounded-3xl max-w-2xl w-full p-6 sm:p-8 md:p-10 shadow-2xl relative my-8 animate-in zoom-in-95 duration-200">
@@ -149,22 +169,37 @@ export default function QuoteModal({ isOpen, onClose, initialProduct }: QuoteMod
               <Check className="w-8 h-8 shrink-0" />
             </div>
             <h4 className="text-xl font-bold text-slate-900 mb-2 font-display">
-              Quotation Request Logged!
+              Quotation Request Logged & Routed!
             </h4>
-            <p className="text-slate-600 text-sm max-w-md mx-auto mb-6 leading-relaxed">
-              Thank you, <strong>{contactName}</strong>. Ashley (Sales) and our Operations team have received your parameters for{" "}
-              <strong>{selectedProducts.join(", ")}</strong>.
+            <p className="text-slate-600 text-sm max-w-md mx-auto mb-3 leading-relaxed">
+              Thank you, <strong>{contactName}</strong>. Your parameters for{" "}
+              <strong>{selectedProducts.join(", ")}</strong> have been recorded and routed to our commercial team:
             </p>
+
+            <div className="inline-flex flex-wrap items-center justify-center gap-1.5 px-3 py-1.5 rounded-xl bg-white border border-emerald-200 text-xs text-slate-700 font-medium mb-5 max-w-lg mx-auto">
+              <span className="font-semibold text-jozi-navy">Notification Delivery:</span>
+              <span className="text-jozi-cyan font-mono text-[11px]">ashley@jozidairy.co.za</span> • 
+              <span className="text-jozi-cyan font-mono text-[11px]">operations@jozidairy.co.za</span> • 
+              <span className="text-jozi-cyan font-mono text-[11px]">sherazaad@synapsesnetworking.com</span>
+            </div>
 
             {reference ? (
               <p className="text-slate-500 text-xs mb-6">
                 Your reference is{" "}
                 <strong className="font-mono text-slate-700">{reference}</strong>
-                . Quote us this number if you phone or WhatsApp us.
+                . Quote us this number when emailing, phoning, or on WhatsApp.
               </p>
             ) : null}
 
             <div className="flex flex-col sm:flex-row items-center justify-center gap-3">
+              <a
+                href={generateEmailQuoteLink()}
+                className="w-full sm:w-auto min-h-[48px] px-6 py-3.5 rounded-xl bg-jozi-cyan hover:brightness-105 active:scale-[0.98] text-white text-sm font-semibold inline-flex items-center justify-center gap-2 shadow-sm transition-all"
+              >
+                <Mail className="w-4 h-4 shrink-0" />
+                <span>Send Direct Email to Team</span>
+              </a>
+
               <a
                 href={generateWhatsAppQuote()}
                 target="_blank"
@@ -172,7 +207,7 @@ export default function QuoteModal({ isOpen, onClose, initialProduct }: QuoteMod
                 className="w-full sm:w-auto min-h-[48px] px-6 py-3.5 rounded-xl bg-[#2E7D32] hover:bg-[#276a2b] text-white text-sm font-semibold inline-flex items-center justify-center gap-2 shadow-sm transition-all"
               >
                 <WhatsAppIcon className="w-4 h-4 fill-current shrink-0" />
-                <span>Transmit Immediately via WhatsApp</span>
+                <span>Transmit on WhatsApp</span>
               </a>
 
               <button
@@ -181,7 +216,7 @@ export default function QuoteModal({ isOpen, onClose, initialProduct }: QuoteMod
                   setSubmitted(false);
                   onClose();
                 }}
-                className="w-full sm:w-auto min-h-[48px] px-6 py-3.5 rounded-xl bg-slate-100 text-slate-700 text-sm font-semibold hover:bg-slate-200 transition-colors inline-flex items-center justify-center"
+                className="w-full sm:w-auto min-h-[48px] px-5 py-3.5 rounded-xl bg-slate-100 text-slate-700 text-sm font-semibold hover:bg-slate-200 transition-colors inline-flex items-center justify-center"
               >
                 Done
               </button>

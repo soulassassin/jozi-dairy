@@ -1,9 +1,14 @@
 import { redirect } from "next/navigation";
 import { getSession, isCrmConfigured } from "@/lib/crm/auth";
 import { getStats, listContacts, listLeads } from "@/lib/crm/service";
+import { leadPath, readLeadParam } from "@/lib/crm/returnPath";
 import CrmDashboard from "@/components/crm/CrmDashboard";
 
-export default async function CrmPage() {
+interface CrmPageProps {
+  searchParams: Promise<{ [key: string]: string | string[] | undefined }>;
+}
+
+export default async function CrmPage({ searchParams }: CrmPageProps) {
   if (!isCrmConfigured()) {
     return (
       <main className="mx-auto max-w-2xl px-6 py-20">
@@ -29,8 +34,18 @@ CRM_SESSION_SECRET=a-long-random-string-at-least-32-chars`}
     );
   }
 
+  // ?lead=<id> comes from the "Open this lead in the CRM" button in the new
+  // lead notification email.
+  const leadId = readLeadParam((await searchParams).lead);
+
   const session = await getSession();
-  if (!session) redirect("/crm/login");
+  if (!session) {
+    // Carry the lead through the login form, so a click from the email on an
+    // expired session still lands on the enquiry it was about.
+    redirect(
+      `/crm/login?next=${encodeURIComponent(leadId ? leadPath(leadId) : "/crm")}`
+    );
+  }
 
   // Server-render the first paint with real data so the team sees their
   // pipeline immediately; the dashboard refetches from the API after that.
@@ -46,6 +61,7 @@ CRM_SESSION_SECRET=a-long-random-string-at-least-32-chars`}
       initialLeads={leads}
       initialContacts={contacts}
       initialStats={stats}
+      initialLeadId={leadId}
     />
   );
 }

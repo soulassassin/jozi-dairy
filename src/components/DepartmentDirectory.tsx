@@ -16,7 +16,7 @@ import {
   Sparkles,
 } from "lucide-react";
 import { WhatsAppIcon } from "@/components/icons/SocialIcons";
-import { COMPANY_INFO, DEPARTMENTS } from "@/data/dairyData";
+import { COMPANY_INFO, DEPARTMENTS, buildInquiryMailto } from "@/data/dairyData";
 
 export default function DepartmentDirectory() {
   const [formData, setFormData] = useState({
@@ -100,14 +100,25 @@ export default function DepartmentDirectory() {
     return `https://wa.me/27652342460?text=${encodeURIComponent(text)}`;
   };
 
+  const getEmailForwardLink = () => {
+    const subject = `Website Inquiry from ${formData.name || "Customer"} [Jozi Dairy]`;
+    const body =
+      `Hi Jozi Dairy Team,\n\n` +
+      `I have submitted the following inquiry via the website:\n\n` +
+      `• Contact Name: ${formData.name}\n` +
+      `• Business / Establishment: ${formData.businessName || "Not provided"}\n` +
+      `• Phone Number: ${formData.phone}\n` +
+      `• Email Address: ${formData.email}\n` +
+      `• Target Department: ${formData.department}\n` +
+      `• Message / Details:\n${formData.message}\n\n` +
+      `Kind regards,\n${formData.name}`;
+
+    return buildInquiryMailto(subject, body, formData.department || "operations@jozidairy.co.za");
+  };
+
   const getMailtoForDept = (email: string) => {
-    if (email.includes("sales") || email.includes("ashley")) {
-      return COMPANY_INFO.emails.salesLink;
-    }
-    if (email.includes("accounts")) {
-      return COMPANY_INFO.emails.accountsLink;
-    }
-    return COMPANY_INFO.emails.operationsLink;
+    const subject = `Inquiry for ${email} - Jozi Dairy`;
+    return buildInquiryMailto(subject, undefined, email);
   };
 
   return (
@@ -277,14 +288,29 @@ export default function DepartmentDirectory() {
                   <CheckCircle2 className="w-8 h-8 shrink-0" />
                 </div>
                 <h4 className="text-lg font-bold text-slate-900 mb-2 font-display">
-                  Inquiry Received!
+                  Inquiry Received & Routed!
                 </h4>
-                <p className="text-slate-600 text-xs sm:text-sm max-w-md mx-auto mb-6 leading-relaxed">
+                <p className="text-slate-600 text-xs sm:text-sm max-w-md mx-auto mb-3 leading-relaxed">
                   Thank you, <strong>{formData.name}</strong>. Your message has been routed to{" "}
-                  <strong>{formData.department}</strong>. A representative will contact you shortly.
+                  <strong>{formData.department}</strong> and queued to our management team:
                 </p>
 
+                <div className="inline-flex flex-wrap items-center justify-center gap-1.5 px-3 py-1.5 rounded-xl bg-white border border-emerald-200 text-xs text-slate-700 font-medium mb-5 max-w-lg mx-auto">
+                  <span className="font-semibold text-jozi-navy">Notification Delivery:</span>
+                  <span className="text-jozi-cyan font-mono text-[11px]">ashley@jozidairy.co.za</span> • 
+                  <span className="text-jozi-cyan font-mono text-[11px]">operations@jozidairy.co.za</span> • 
+                  <span className="text-jozi-cyan font-mono text-[11px]">sherazaad@synapsesnetworking.com</span>
+                </div>
+
                 <div className="flex flex-col sm:flex-row items-center justify-center gap-3">
+                  <a
+                    href={getEmailForwardLink()}
+                    className="w-full sm:w-auto min-h-[48px] px-6 py-3 rounded-xl bg-jozi-cyan text-white text-sm font-semibold inline-flex items-center justify-center gap-2 shadow-sm hover:brightness-105 transition-all"
+                  >
+                    <Mail className="w-4 h-4 shrink-0" />
+                    <span>Send Direct Email to Team</span>
+                  </a>
+
                   <a
                     href={getWhatsAppForwardLink()}
                     target="_blank"

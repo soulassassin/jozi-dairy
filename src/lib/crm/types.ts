@@ -166,6 +166,12 @@ export const SOURCE_LABELS: Record<LeadSource, string> = {
   REFERRAL: "Referral",
 };
 
+export const PRIORITY_LABELS: Record<LeadPriority, string> = {
+  LOW: "Low",
+  MEDIUM: "Medium",
+  HIGH: "High",
+};
+
 export const ACTIVITY_LABELS: Record<ActivityType, string> = {
   CALL_OUTBOUND: "Called out",
   CALL_INBOUND: "Inbound call",

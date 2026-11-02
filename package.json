@@ -19,6 +19,7 @@
     "jose": "^6.2.12",
     "lucide-react": "^1.46.0",
     "next": "^16.3.5",
+    "nodemailer": "^7.0.13",
     "react": "^19.3.0",
     "react-dom": "^19.3.0",
     "three": "^0.186.0"
@@ -26,6 +27,7 @@
   "devDependencies": {
     "@types/canvas-confetti": "^1.9.0",
     "@types/node": "^26.5.1",
+    "@types/nodemailer": "^8.0.2",
     "@types/react": "^19.3.0",
     "@types/react-dom": "^19.3.0",
     "@types/three": "^0.186.0",

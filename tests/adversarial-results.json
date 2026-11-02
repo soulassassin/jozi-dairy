@@ -1,0 +1,93 @@
+{
+  "cheese": {
+    "twitterCard": "summary_large_image",
+    "twitterTitle": "Wholesale &amp; Artisanal Cheese Selection | Jozi Dairy",
+    "twitterDesc": "Farm-fresh South African Cheddar, Sweetmilk Gouda, Culinary Mozzarella and Traditional Greek Feta. Cold-chain delivery guaranteed from Midrand.",
+    "twitterImg": "https://www.jozidairy.co.za/assets/cheese-hero-banner.jpg",
+    "ogTitle": "Wholesale &amp; Artisanal Cheese Selection | Jozi Dairy",
+    "canonical": "https://www.jozidairy.co.za/cheese",
+    "homeTitle": "Jozi Dairy | Fresh Dairy Distribution • Midrand, Johannesburg",
+    "homeTwitterTitle": "Jozi Dairy | Fresh Dairy Distribution • Midrand, Johannesburg",
+    "homeOgTitle": "Jozi Dairy | Farm-Fresh Dairy Delivered Straight to Your Business &amp; Home"
+  },
+  "products": {
+    "fresh-milk": {
+      "twTitle": "Fresh Milk Wholesale &amp; Retail Supply | Jozi Dairy",
+      "twDesc": "Farm-fresh pasteurized milk from Mooi River, KwaZulu-Natal",
+      "twImg": "https://www.jozidairy.co.za/og/milk-preview.jpg",
+      "twCard": "summary_large_image",
+      "ogTitle": "Fresh Milk | Jozi Dairy Distribution",
+      "ogDesc": "Farm-fresh pasteurized milk from Mooi River, KwaZulu-Natal",
+      "ogImg": "https://www.jozidairy.co.za/og/milk-preview.jpg",
+      "canonical": "https://www.jozidairy.co.za/products/fresh-milk"
+    },
+    "yoghurt": {
+      "twTitle": "Yoghurt &amp; Drinking Yoghurt Wholesale &amp; Retail Supply | Jozi Dairy",
+      "twDesc": "Rich, creamy, delightfully smooth yoghurt in 10+ decadent flavours",
+      "twImg": "https://www.jozidairy.co.za/og/yoghurt-preview.jpg",
+      "twCard": "summary_large_image",
+      "ogTitle": "Yoghurt &amp; Drinking Yoghurt | Jozi Dairy Distribution",
+      "ogDesc": "Rich, creamy, delightfully smooth yoghurt in 10+ decadent flavours",
+      "ogImg": "https://www.jozidairy.co.za/og/yoghurt-preview.jpg",
+      "canonical": "https://www.jozidairy.co.za/products/yoghurt"
+    },
+    "fresh-cream": {
+      "twTitle": "Fresh Cream Wholesale &amp; Retail Supply | Jozi Dairy",
+      "twDesc": "Rich, velvety fresh whipping and culinary cream for hospitality &amp; bakeries",
+      "twImg": "https://www.jozidairy.co.za/assets/products/fresh-cream.jpeg",
+      "twCard": "summary_large_image",
+      "ogTitle": "Fresh Cream | Jozi Dairy Distribution",
+      "ogDesc": "Rich, velvety fresh whipping and culinary cream for hospitality &amp; bakeries",
+      "ogImg": "https://www.jozidairy.co.za/assets/products/fresh-cream.jpeg",
+      "canonical": "https://www.jozidairy.co.za/products/fresh-cream"
+    },
+    "amasi": {
+      "twTitle": "Cultured Milk (Amasi &amp; Buttermilk) Wholesale &amp; Retail Supply | Jozi Dairy",
+      "twDesc": "Traditional thick-set Amasi &amp; smooth Buttermilk made from full cream milk",
+      "twImg": "https://www.jozidairy.co.za/og/amasi-preview.jpg",
+      "twCard": "summary_large_image",
+      "ogTitle": "Cultured Milk (Amasi &amp; Buttermilk) | Jozi Dairy Distribution",
+      "ogDesc": "Traditional thick-set Amasi &amp; smooth Buttermilk made from full cream milk",
+      "ogImg": "https://www.jozidairy.co.za/og/amasi-preview.jpg",
+      "canonical": "https://www.jozidairy.co.za/products/amasi"
+    },
+    "juice": {
+      "twTitle": "Spring Meadow Dairy 100% Juice Blend Wholesale &amp; Retail Supply | Jozi Dairy",
+      "twDesc": "100% pure fresh fruit juice blends packed with crisp, natural fruit goodness",
+      "twImg": "https://www.jozidairy.co.za/assets/products/fresh-juice.jpeg",
+      "twCard": "summary_large_image",
+      "ogTitle": "Spring Meadow Dairy 100% Juice Blend | Jozi Dairy Distribution",
+      "ogDesc": "100% pure fresh fruit juice blends packed with crisp, natural fruit goodness",
+      "ogImg": "https://www.jozidairy.co.za/assets/products/fresh-juice.jpeg",
+      "canonical": "https://www.jozidairy.co.za/products/juice"
+    },
+    "dairy-blend": {
+      "twTitle": "Dairy Blend Wholesale &amp; Retail Supply | Jozi Dairy",
+      "twDesc": "High-yield, cost-effective beverage blends engineered for bulk supply",
+      "twImg": "https://www.jozidairy.co.za/assets/products/dairy-blend.jpg",
+      "twCard": "summary_large_image",
+      "ogTitle": "Dairy Blend | Jozi Dairy Distribution",
+      "ogDesc": "High-yield, cost-effective beverage blends engineered for bulk supply",
+      "ogImg": "https://www.jozidairy.co.za/assets/products/dairy-blend.jpg",
+      "canonical": "https://www.jozidairy.co.za/products/dairy-blend"
+    }
+  },
+  "invoices": {
+    "statusCode": 200,
+    "robotsMeta": "noindex, nofollow, nocache",
+    "printStyles": {
+      "hasPrintHidden": true,
+      "hasPrintP0": true,
+      "hasPrintBgWhite": true,
+      "hasPrintShadowNone": true,
+      "hasWindowPrint": true
+    },
+    "contentPreservation": {
+      "hasSarsHeading": true,
+      "hasVat": true,
+      "hasBank": true
+    }
+  },
+  "passed": true,
+  "failures": []
+}

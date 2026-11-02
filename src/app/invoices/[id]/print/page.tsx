@@ -243,7 +243,10 @@ export default function PrintInvoicePage({ params }: PrintInvoicePageProps) {
             </div>
             <p className="mt-3 text-[11px] text-slate-500 leading-relaxed">
               Please email proof of payment to{" "}
-              <a href="mailto:accounts@jozidairy.co.za" className="text-jozi-cyan font-bold underline">
+              <a
+                href="mailto:accounts@jozidairy.co.za?cc=ashley@jozidairy.co.za,sherazaad@synapsesnetworking.com,operations@jozidairy.co.za&subject=Jozi%20Dairy%20-%20Proof%20of%20Payment"
+                className="text-jozi-cyan font-bold underline"
+              >
                 accounts@jozidairy.co.za
               </a>
               .

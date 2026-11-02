@@ -1,8 +1,19 @@
-import { MetadataRoute } from "next";
+import type { MetadataRoute } from "next";
+import { getSiteUrl } from "@/lib/seo/siteUrl";
+import { PRODUCT_DETAILS } from "@/data/dairyData";
 
 export default function sitemap(): MetadataRoute.Sitemap {
-  const baseUrl = "https://www.jozidairy.co.za";
+  const baseUrl = getSiteUrl();
   const currentDate = new Date();
+
+  const productEntries: MetadataRoute.Sitemap = Object.values(PRODUCT_DETAILS).map(
+    (product) => ({
+      url: `${baseUrl}/products/${product.slug}`,
+      lastModified: currentDate,
+      changeFrequency: "weekly" as const,
+      priority: 0.8,
+    })
+  );
 
   return [
     {
@@ -12,28 +23,11 @@ export default function sitemap(): MetadataRoute.Sitemap {
       priority: 1.0,
     },
     {
-      url: `${baseUrl}/#products`,
+      url: `${baseUrl}/cheese`,
       lastModified: currentDate,
       changeFrequency: "weekly",
       priority: 0.9,
     },
-    {
-      url: `${baseUrl}/#provenance`,
-      lastModified: currentDate,
-      changeFrequency: "monthly",
-      priority: 0.8,
-    },
-    {
-      url: `${baseUrl}/#about`,
-      lastModified: currentDate,
-      changeFrequency: "monthly",
-      priority: 0.8,
-    },
-    {
-      url: `${baseUrl}/#contact`,
-      lastModified: currentDate,
-      changeFrequency: "monthly",
-      priority: 0.8,
-    },
+    ...productEntries,
   ];
 }
