@@ -5,6 +5,7 @@ import confetti from "canvas-confetti";
 import { X, Check, Calculator, Mail, Sparkles, Building2, Package } from "lucide-react";
 import { WhatsAppIcon } from "@/components/icons/SocialIcons";
 import { COMPANY_INFO, PRODUCTS, buildInquiryMailto } from "@/data/dairyData";
+import { INQUIRY_ENDPOINT } from "@/lib/crm/inquiryEndpoint";
 
 interface QuoteModalProps {
   isOpen: boolean;
@@ -50,7 +51,7 @@ export default function QuoteModal({ isOpen, onClose, initialProduct }: QuoteMod
     // Log the request in the CRM so Ashley has it whether or not the visitor
     // goes on to send the WhatsApp message.
     try {
-      const response = await fetch("/api/inquiries", {
+      const response = await fetch(INQUIRY_ENDPOINT, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({

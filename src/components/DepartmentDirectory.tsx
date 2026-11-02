@@ -17,6 +17,7 @@ import {
 } from "lucide-react";
 import { WhatsAppIcon } from "@/components/icons/SocialIcons";
 import { COMPANY_INFO, DEPARTMENTS, buildInquiryMailto } from "@/data/dairyData";
+import { INQUIRY_ENDPOINT } from "@/lib/crm/inquiryEndpoint";
 
 export default function DepartmentDirectory() {
   const [formData, setFormData] = useState({
@@ -49,7 +50,7 @@ export default function DepartmentDirectory() {
     // Record the enquiry in the CRM so the team has it even if the visitor
     // never sends the WhatsApp message or the mailto draft.
     try {
-      const response = await fetch("/api/inquiries", {
+      const response = await fetch(INQUIRY_ENDPOINT, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({

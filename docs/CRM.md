@@ -138,6 +138,39 @@ owner, follow-up date and estimated value. Source, status and priority are
 written in the same words the dashboard uses, not the internal codes. It opens
 cleanly in Excel — the file carries a byte-order mark so accented names survive.
 
+## Deploying the site and the CRM separately
+
+The marketing site and the CRM do not have to share a host, and on a serverless
+platform they must not. `data/crm.json` needs a persistent filesystem; a
+serverless function gets a throwaway one, so a lead written there is gone when
+the function freezes. The write succeeds and the visitor gets a reference
+number, which makes it the worst kind of failure — a silent one.
+
+So **lead capture refuses to run when the store is not durable.** On a
+serverless host `/api/inquiries` returns 503 and the form tells the visitor to
+phone or WhatsApp instead. Nothing is written and nothing is lost quietly.
+`CRM_ALLOW_EPHEMERAL_STORE=true` overrides this, and is only sensible for a
+throwaway preview.
+
+To run the site on a CDN platform and the CRM on a Node host, set two
+variables:
+
+| Where | Variable | Value |
+| --- | --- | --- |
+| Public site | `NEXT_PUBLIC_INQUIRY_ENDPOINT` | `https://crm.jozidairy.co.za/api/inquiries` |
+| CRM host | `CRM_ALLOWED_ORIGINS` | `https://www.jozidairy.co.za,https://jozidairy.co.za` |
+
+The first points the quote and contact forms at the CRM instead of the site's
+own route; it is read at build time, so the public deployment must be rebuilt
+after changing it. The second lets the browser's CORS preflight through — an
+origin that is not listed is refused, so the endpoint is not open to the web.
+
+A bad value for `NEXT_PUBLIC_INQUIRY_ENDPOINT` falls back to the same-origin
+route and logs a warning rather than posting enquiries into the void.
+
+Leave both unset when one deployment serves everything, which is the default
+and needs no configuration.
+
 ## Where the data lives
 
 Leads are stored as JSON in **`data/crm.json`** (gitignored — it holds real

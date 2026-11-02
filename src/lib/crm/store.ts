@@ -84,3 +84,29 @@ export async function mutate<T>(
 }
 
 export const DATA_FILE_PATH = DATA_FILE;
+
+/**
+ * True when this process can actually keep what it writes.
+ *
+ * The store is a JSON file on local disk, which assumes one long-lived server
+ * with a persistent filesystem — a VPS or shared host. Serverless platforms
+ * hand each invocation a throwaway filesystem instead, so a lead written there
+ * disappears when the function freezes. That failure is invisible: the write
+ * succeeds, the visitor sees a reference number, and the enquiry is gone.
+ *
+ * Lead capture checks this and refuses rather than accepting an enquiry it
+ * cannot keep. Set CRM_ALLOW_EPHEMERAL_STORE=true to override (useful for a
+ * throwaway preview deployment where losing leads does not matter).
+ */
+export function isStoreDurable(): boolean {
+  if (process.env.CRM_ALLOW_EPHEMERAL_STORE === "true") return true;
+
+  const serverless = Boolean(
+    process.env.VERCEL ??
+      process.env.AWS_LAMBDA_FUNCTION_NAME ??
+      process.env.NETLIFY ??
+      process.env.CF_PAGES
+  );
+
+  return !serverless;
+}
