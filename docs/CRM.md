@@ -182,23 +182,55 @@ and needs no configuration.
 
 ## Where the data lives
 
-Leads are stored as JSON in **`data/crm.json`** (gitignored — it holds real
-customer details). Writes are serialised and go through a temp file and rename,
-so a crash mid-write cannot truncate the file.
+Two stores, chosen by whether `DATABASE_URL` is set:
 
-Back it up by copying that file. Point `CRM_DATA_DIR` elsewhere to move it.
+| `DATABASE_URL` | Store | Suits |
+| --- | --- | --- |
+| set | **Postgres** (`src/lib/crm/pgStore.ts`) | any real deployment, including serverless |
+| unset | **JSON file** at `data/crm.json` (`CRM_DATA_DIR` moves it) | local development, no database to provision |
 
-### Moving to Postgres later
+`storeKind()` reports which is live. The service layer, API routes and UI are
+identical either way — both stores present the same `read()` and `mutate()`
+over a whole database.
 
-The repo already has a Prisma schema (`prisma/schema.prisma`) with `Client` and
-`CrmNote` models for the invoicing side. When you provision that database, only
-`src/lib/crm/store.ts` needs rewriting — its `read()` and `mutate()` functions
-are the only code that touches the filesystem. Everything above it (the service
-layer, API routes and UI) is unchanged.
+### Postgres
 
-The file-backed store assumes a single server process. It suits one dairy office
-on one deployment; it is not safe across multiple instances or serverless
-functions, which is the point at which the Postgres swap becomes necessary.
+The CRM tables are `crm_lead`, `crm_activity` and `crm_counter`, created by the
+`create_crm_leads` migration. They are deliberately separate from the
+`Client`/`CrmNote` tables in `prisma/schema.prisma`, which model an existing
+customer's account: a lead is a prospect who has not become a client yet.
+
+Set `DATABASE_URL` to a **pooled** connection string (Supabase's pooler, port
+6543) on a serverless host, so many short-lived invocations share a small
+number of server connections. `CRM_DB_POOL_MAX` caps connections per instance
+(default 3).
+
+TLS certificates are always verified — the connection carries real customer
+records. The pooler presents a publicly trusted certificate, so nothing extra
+is needed; a direct connection to `db.<ref>.supabase.co` needs Supabase's CA
+bundle in `CRM_DB_CA_CERT`.
+
+Row level security is enabled on all three tables with **no policies**, so the
+anon and publishable API keys can read nothing. Nothing in a browser ever talks
+to these tables; the CRM reaches them only through its own authenticated server
+routes.
+
+**Concurrent writes are safe.** `mutate()` runs in a transaction holding a
+transaction-scoped advisory lock, so simultaneous writers queue rather than
+overwrite each other — and that holds across separate instances, which is what
+the file store could never do. Only the rows that actually changed are written:
+the mutator receives a snapshot, and the difference against what it leaves
+behind becomes the insert/update/delete set.
+
+### The JSON file
+
+Writes are serialised in-process and go through a temp file and rename, so a
+crash mid-write cannot truncate the file. Back it up by copying it.
+
+It assumes **one** long-lived server process with a persistent disk. It is not
+safe across multiple instances, and on a serverless platform it cannot persist
+at all — see [Deploying the site and the CRM separately](#deploying-the-site-and-the-crm-separately)
+for what capture does about that.
 
 ## Security notes
 

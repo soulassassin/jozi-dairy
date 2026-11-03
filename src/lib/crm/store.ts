@@ -1,5 +1,6 @@
 import { promises as fs } from "node:fs";
 import path from "node:path";
+import * as pg from "./pgStore";
 import { CrmDatabase } from "./types";
 
 // The CRM persists to a JSON file on the server so the team can run it with no
@@ -35,7 +36,7 @@ function isMissingFile(error: unknown): boolean {
 }
 
 /** Reads the whole database. Returns an empty database on first run. */
-export async function read(): Promise<CrmDatabase> {
+async function readFile(): Promise<CrmDatabase> {
   try {
     const raw = await fs.readFile(DATA_FILE, "utf8");
     const parsed = JSON.parse(raw) as CrmDatabase;
@@ -66,11 +67,11 @@ async function write(db: CrmDatabase): Promise<void> {
  * behind, and returns the mutator's result. Mutations are serialised, so the
  * database handed to `mutator` is always the latest committed state.
  */
-export async function mutate<T>(
+async function mutateFile<T>(
   mutator: (db: CrmDatabase) => T | Promise<T>
 ): Promise<T> {
   const run = writeQueue.then(async () => {
-    const db = await read();
+    const db = await readFile();
     const result = await mutator(db);
     await write(db);
     return result;
@@ -85,20 +86,52 @@ export async function mutate<T>(
 
 export const DATA_FILE_PATH = DATA_FILE;
 
+// ---------------------------------------------------------------------------
+// Which store is in use
+// ---------------------------------------------------------------------------
+//
+// Postgres when DATABASE_URL is set, otherwise the JSON file. That keeps a
+// fresh checkout working with no database to provision, while a real
+// deployment gets a store that survives more than one server process.
+
+/** "postgres" or "file" — useful in logs and on the setup screen. */
+export function storeKind(): "postgres" | "file" {
+  return pg.isConfigured() ? "postgres" : "file";
+}
+
+/** Reads the whole database from whichever store is configured. */
+export async function read(): Promise<CrmDatabase> {
+  return pg.isConfigured() ? pg.read() : readFile();
+}
+
+/**
+ * Runs `mutator` against the current database and persists the result.
+ *
+ * Mutations are serialised either way: in-process for the file store, and by
+ * a transaction-scoped advisory lock for Postgres, which also holds across
+ * separate instances.
+ */
+export async function mutate<T>(
+  mutator: (db: CrmDatabase) => T | Promise<T>
+): Promise<T> {
+  return pg.isConfigured() ? pg.mutate(mutator) : mutateFile(mutator);
+}
+
 /**
  * True when this process can actually keep what it writes.
  *
- * The store is a JSON file on local disk, which assumes one long-lived server
- * with a persistent filesystem — a VPS or shared host. Serverless platforms
- * hand each invocation a throwaway filesystem instead, so a lead written there
- * disappears when the function freezes. That failure is invisible: the write
- * succeeds, the visitor sees a reference number, and the enquiry is gone.
+ * Postgres always can. The JSON file cannot on a serverless platform, which
+ * hands each invocation a throwaway filesystem: a lead written there
+ * disappears when the function freezes, and the write succeeds first, so the
+ * visitor is told an enquiry was received that nobody will ever read.
  *
- * Lead capture checks this and refuses rather than accepting an enquiry it
- * cannot keep. Set CRM_ALLOW_EPHEMERAL_STORE=true to override (useful for a
- * throwaway preview deployment where losing leads does not matter).
+ * Lead capture checks this and falls back to emailing the team rather than
+ * accepting an enquiry it cannot keep. Set CRM_ALLOW_EPHEMERAL_STORE=true to
+ * override (useful for a throwaway preview where losing leads does not
+ * matter).
  */
 export function isStoreDurable(): boolean {
+  if (pg.isConfigured()) return true;
   if (process.env.CRM_ALLOW_EPHEMERAL_STORE === "true") return true;
 
   const serverless = Boolean(
